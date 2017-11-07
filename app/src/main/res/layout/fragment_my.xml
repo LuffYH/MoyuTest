@@ -1,0 +1,121 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/crimson"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_scrollFlags="scroll|enterAlways|snap"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <ImageView
+        android:id="@+id/my_photo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/toolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/my_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/my_photo"
+        android:layout_centerHorizontal="true"
+        android:text="黄杰安"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/follow_fans"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/my_id"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/follow_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/my_photo"
+            android:layout_marginLeft="35dp"
+            android:layout_toEndOf="@+id/vertical_cut"
+            android:layout_weight="0.5"
+            android:text="关注："
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/my_follow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/my_photo"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/follow_text"
+            android:layout_weight="1"
+            android:text="10000"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/fans_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/my_photo"
+            android:layout_marginLeft="35dp"
+            android:layout_toEndOf="@+id/vertical_cut"
+            android:layout_weight="0.5"
+            android:text="粉丝："
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/my_fans"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/my_photo"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/fans_text"
+            android:layout_weight="1"
+            android:text="0"
+            android:textColor="#000000" />
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/horizontal_cut"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/follow_fans"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/black" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/horizontal_cut"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="20dp"
+            android:text="收藏"
+            android:textSize="20sp" />
+
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:text="历史"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+</RelativeLayout>
