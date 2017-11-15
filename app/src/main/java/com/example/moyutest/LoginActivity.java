@@ -27,9 +27,13 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.moyutest.model.MoyuUser;
 import com.example.moyutest.util.HttpUtil;
 import com.example.moyutest.util.Utility;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
 
 import java.io.IOException;
@@ -242,11 +246,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intentRegist);
                 break;
             case R.id.btn_login:
-                String logurl = "http://114.67.134.219:8080/moyu/user/login";
-                String pw, mb;
-                mb = mEtMobile.getText().toString();
-                pw = mEtPassword.getText().toString();
-                HttpUtil.login(logurl, mb, pw, new Callback() {
+                String logurl = "http://114.67.134.219:8080/moyu/login";
+                String mb = mEtMobile.getText().toString();
+                String pw = mEtPassword.getText().toString();
+                String md5pw = new String(Hex.encodeHex(DigestUtils.md5(pw)));
+                SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
+                String token = pref.getString("token", "");
+                Long userid = DataSupport.findFirst(MoyuUser.class).getUserId();
+                HttpUtil.login(logurl, mb, md5pw, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
 
@@ -256,6 +263,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onResponse(Call call, Response response) throws IOException {
                         String responseText = response.body().string();
                         String tk = Utility.handletokenResponse(responseText);
+                        Log.d("Phone", "登陆返                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       回Json" + responseText);
                         if (tk != null && !tk.equals("")) {
                             SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
                             editor.putString("token", tk);
@@ -265,7 +273,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             finish();
                         } else {
                             Looper.prepare();
-                            Toast.makeText(LoginActivity.this, "数据错误，注册失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "登陆失败", Toast.LENGTH_SHORT).show();
                             Looper.loop();
                         }
                     }

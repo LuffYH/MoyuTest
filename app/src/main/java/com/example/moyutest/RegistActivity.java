@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.moyutest.util.HttpUtil;
+import com.example.moyutest.util.Utility;
 import com.mob.MobSDK;
 
 import java.io.IOException;
@@ -147,7 +148,7 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
                 checkPhone(); // 判断输入号码是否正确
                 break;
             case R.id.btn_regist:
-                SMSSDK.submitVerificationCode("86", phoneNums, etcode.getText().toString());
+                 SMSSDK.submitVerificationCode("86", phoneNums, etcode.getText().toString());
                 break;
         }
     }
@@ -195,7 +196,6 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
                 int result = msg.arg2;
                 Object data = msg.obj;
                 if (result == SMSSDK.RESULT_COMPLETE) {
-                    // 短信注册成功后，返回MainActivity,然后提示
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {// 提交验证码成功
                         Toast toast = Toast.makeText(getApplicationContext(), "验证成功",
                                 Toast.LENGTH_SHORT);
@@ -262,11 +262,12 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
-                Log.d("Phone", phoneNums);
-                if (responseText.equals("false")) {
+                String success = Utility.handleregistResponse(responseText);
+                Log.d("Phone", "注册手机号 = " + phoneNums);
+                if (success.equals("false")) {
                     Log.d("Phone", responseText + "没注册");
                     sendSMS();
-                } else if (responseText.equals("true")) {
+                } else if (success.equals("true")) {
                     Log.d("Phone", responseText + "已注册");
                     Looper.prepare();
                     Toast.makeText(RegistActivity.this, "账号已经注册！", Toast.LENGTH_SHORT).show();

@@ -89,12 +89,12 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         String token = pref.getString("token", "");
         if (token != null && !token.equals("")) {
             loginFlag = true;
-            Log.d("Phone", token);
+            Log.d("Phone", "登陆token = " + token);
         }
         if (loginFlag == false) {
             Intent logintent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(logintent);
-            Log.d("Phone", "false");
+            Log.d("Phone", "未登录状态");
             finish();
         }
     }

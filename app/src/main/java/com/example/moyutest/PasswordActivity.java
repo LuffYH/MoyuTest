@@ -1,9 +1,10 @@
 package com.example.moyutest;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +26,7 @@ import okhttp3.Response;
 public class PasswordActivity extends AppCompatActivity {
 
 
-    private String phone, pw, code, nn, url, pw2;
+    private String phone, pw, code, nn, url, pw2, pwmd5;
     private EditText nickname, password, password2;
     private Button password_confirm;
 
@@ -38,17 +39,17 @@ public class PasswordActivity extends AppCompatActivity {
         nickname = (EditText) findViewById(R.id.nickname);
         password = (EditText) findViewById(R.id.password);
         password2 = (EditText) findViewById(R.id.password2);
-        pw = password.getText().toString();
-        pw2 = password2.getText().toString();
         password_confirm = (Button) findViewById(R.id.password_confirm);
         password_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pw = password.getText().toString();
+                pw2 = password2.getText().toString();
                 if (!pw.equals(pw2)) {
-                    Log.d("Phone", pw + "+" + pw2);
+                    Log.d("Phone", "密码确认错误" + pw + "不等于" + pw2);
                     Toast.makeText(PasswordActivity.this, "确认密码错误", Toast.LENGTH_SHORT).show();
                 } else {
-                    pw = new String(Hex.encodeHex(DigestUtils.md5(pw)));
+                    pwmd5 = new String(Hex.encodeHex(DigestUtils.md5(pw)));
                     code = new String(Hex.encodeHex(DigestUtils.md5(phone)));
                     nn = nickname.getText().toString();
                     join();
@@ -61,7 +62,7 @@ public class PasswordActivity extends AppCompatActivity {
     private void join() {
         url = "http://114.67.134.219:8080/moyu/user/join";
         final int flag = 1;
-        HttpUtil.postjoin(url, phone, pw, nn, code, new Callback() {
+        HttpUtil.postjoin(url, phone, pwmd5, nn, code, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -70,8 +71,12 @@ public class PasswordActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responsetext = response.body().string();
-                Log.d("Phone", responsetext);
-                if (Utility.handlejoinResponse(responsetext, pw, phone)) {
+                String token = Utility.handlejoinResponse(responsetext, pwmd5, phone);
+                Log.d("Phone", "注册返回token = " + token);
+                if (token != null && !token.equals("")) {
+                    SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
+                    editor.putString("token", token);
+                    editor.commit();
                     Intent successintent = new Intent(PasswordActivity.this, MainActivity.class);
                     startActivity(successintent);
                     LoginActivity.mLoginActivity.finish();

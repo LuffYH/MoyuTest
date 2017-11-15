@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.moyutest.ContentActivity;
 import com.example.moyutest.R;
-import com.example.moyutest.db.News;
+import com.example.moyutest.db.Contents;
 
 import java.util.List;
 
@@ -21,10 +21,10 @@ import java.util.List;
  * Created by Administrator on 2017/9/27.
  */
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
+public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ViewHolder> {
 
     private Context mContext;
-    private List<News> mNewsList;
+    private List<Contents> mContentsList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
@@ -40,8 +40,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         }
     }
 
-    public NewsAdapter(List<News> newsList) {
-        mNewsList = newsList;
+    public ContentAdapter(List<Contents> contentsList) {
+        mContentsList = contentsList;
     }
 
 
@@ -56,11 +56,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-                News news = mNewsList.get(position);
+                Contents contents = mContentsList.get(position);
                 Intent intent = new Intent(mContext, ContentActivity.class);
-                intent.putExtra(ContentActivity.NEWS_NAME, news.getName());
-                intent.putExtra(ContentActivity.NEWS_IMAGE_ID, news.getImageId());
-                intent.putExtra(ContentActivity.NEWS_CONTENT, news.getContent());
+                intent.putExtra(ContentActivity.CONTENTS_NAME, contents.getName());
+                intent.putExtra(ContentActivity.CONTENTS_IMAGE_ID, contents.getImageId());
+                intent.putExtra(ContentActivity.CONTENTS_CONTENT, contents.getContent());
                 mContext.startActivity(intent);
             }
         });
@@ -69,15 +69,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        News news = mNewsList.get(position);
-        holder.newsName.setText(news.getName());
-        holder.news_content.setText(news.getContent());
-        Glide.with(mContext).load(news.getImageId()).into(holder.newsImage);
+        Contents contents = mContentsList.get(position);
+        holder.newsName.setText(contents.getName());
+        holder.news_content.setText(contents.getContent());
+        Glide.with(mContext).load(contents.getImageId()).into(holder.newsImage);
     }
 
     @Override
     public int getItemCount() {
-        return mNewsList.size();
+        return mContentsList.size();
     }
 
 

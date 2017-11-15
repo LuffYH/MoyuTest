@@ -4,12 +4,12 @@ package com.example.moyutest.db;
  * Created by Administrator on 2017/8/18.
  */
 
-public class News {
+public class Contents {
     private String name;
     private String content;
     private int imageId;
 
-    public News(String name, String content, int imageId) {
+    public Contents(String name, String content, int imageId) {
         this.name = name;
         this.imageId = imageId;
         this.content = content;
