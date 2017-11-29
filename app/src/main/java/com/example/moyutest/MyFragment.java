@@ -1,5 +1,7 @@
 package com.example.moyutest;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,9 +13,15 @@ import com.example.moyutest.model.MoyuUser;
 
 import org.litepal.crud.DataSupport;
 
-
 public class MyFragment extends Fragment {
     private TextView follow, fans, nickname;
+    private Context mContext;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.mContext = getActivity();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -25,7 +33,8 @@ public class MyFragment extends Fragment {
         follow.setText(String.valueOf(user.getFollow()));
         fans.setText(String.valueOf(user.getFollower()));
         nickname.setText(user.getNickname());
-
         return view;
     }
+
+
 }

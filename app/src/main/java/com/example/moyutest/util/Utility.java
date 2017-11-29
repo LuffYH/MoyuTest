@@ -14,9 +14,6 @@ import org.json.JSONObject;
  */
 
 public class Utility {
-    /**
-     * 解析和处理服务器返回的省级数据
-     */
 
     public static String handlejoinResponse(String response, String pw, String phone) {
         String token = "";

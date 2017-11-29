@@ -33,7 +33,9 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".PasswordActivity" />
         <activity android:name=".RegistActivity" />
-        <activity android:name=".ContentActivity"></activity>
+        <activity android:name=".ContentActivity" />
+        <activity android:name=".MoyuActivity" />
+        <activity android:name=".MyActivity"></activity>
     </application>
 
 </manifest>

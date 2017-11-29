@@ -16,8 +16,6 @@
             android:background="@color/crimson">
 
 
-
-
             <LinearLayout
                 android:id="@+id/txt_search"
                 android:layout_width="match_parent"
@@ -67,5 +65,6 @@
         </android.support.v4.widget.SwipeRefreshLayout>
 
     </android.support.design.widget.CoordinatorLayout>
+
 </LinearLayout>
 

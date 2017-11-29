@@ -222,8 +222,6 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
 
     /**
      * 判断手机号码是否合理
-     *
-     * @param phoneNums
      */
     private boolean judgePhoneNums(String phoneNums) {
         if (isMatchLength(phoneNums, 11) && isMobileNO(phoneNums)) {

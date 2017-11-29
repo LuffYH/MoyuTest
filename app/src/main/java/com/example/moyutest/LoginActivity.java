@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private int screenHeight = 0;//屏幕高度
     private int keyHeight = 0; //软件盘弹起后所占高度
     private Button mBtnLogin;
+    private boolean loginFlag = false;
     private EditText mEtMobile, mEtPassword;
     private ImageView mIvCleanPhone, mCleanPassword, mIvShowPwd, mLogo;
     private ScrollView mScrollView;
@@ -60,6 +61,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mLoginActivity = this;
+        checklogin();
         //获取到SQLiteDatabase的实例
         SQLiteStudioService.instance().start(this);
         Connector.getDatabase();
@@ -83,6 +85,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mEtPassword.clearFocus();
         initView();
         initEvent();
+    }
+
+    private void checklogin() {
+        SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
+        String token = pref.getString("token", "");
+        if (token != null && !token.equals("")) {
+            loginFlag = true;
+            Log.d("Phone", "登陆token = " + token);
+        }
+        if (loginFlag == true) {
+            Intent logintent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(logintent);
+            Log.d("Phone", "登录状态");
+            finish();
+        }
     }
 
     private void initView() {
@@ -263,7 +280,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onResponse(Call call, Response response) throws IOException {
                         String responseText = response.body().string();
                         String tk = Utility.handletokenResponse(responseText);
-                        Log.d("Phone", "登陆返                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       回Json" + responseText);
+                        Log.d("Phone", "登陆返回Json" + responseText);
                         if (tk != null && !tk.equals("")) {
                             SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
                             editor.putString("token", tk);

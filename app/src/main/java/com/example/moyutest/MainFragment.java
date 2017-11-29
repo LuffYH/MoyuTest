@@ -1,6 +1,7 @@
 package com.example.moyutest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,8 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+
 import com.example.moyutest.adapter.ContentAdapter;
 import com.example.moyutest.db.Contents;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,6 +24,7 @@ import java.util.Random;
 public class MainFragment extends Fragment {
     private LinearLayout search;
     private Context mContext;
+    private RelativeLayout my_btn;
     private SwipeRefreshLayout swipeRefresh;
     private Contents[] acontents = {
             new Contents("11111", "1111111111", R.mipmap.ic_launcher),
@@ -43,8 +48,8 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-
         search = (LinearLayout) view.findViewById(R.id.txt_search);
+        my_btn = (RelativeLayout) view.findViewById(R.id.tv_profile);
 //
 //        //点击回车键盘时候触发的事件
 //        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {

@@ -2,12 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/main"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/tabbar_home_auto"
         android:orderInCategory="0"
         android:title="首页" />
     <item
+        android:id="@+id/message"
+        android:icon="@drawable/tabbar_message_auto"
+        android:orderInCategory="1"
+        android:title="消息" />
+    <item
+        android:id="@+id/fl_post"
+        android:icon="@drawable/rect_orgin_auto"
+        android:orderInCategory="1"
+        android:title="" />
+    <item
+        android:id="@+id/discovery"
+        android:icon="@drawable/tabbar_discover_auto"
+        android:orderInCategory="1"
+        android:title="发现" />
+    <item
         android:id="@+id/my"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/tabbar_profile_auto"
         android:orderInCategory="1"
         android:title="我的" />
 
