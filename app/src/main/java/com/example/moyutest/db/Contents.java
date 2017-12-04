@@ -5,25 +5,38 @@ package com.example.moyutest.db;
  */
 
 public class Contents {
-    private String name;
-    private String content;
-    private int imageId;
+    private String mauthorName;
+    private String mcontent;
+    private int mimageId;
+    private int mweiboLike;
+    private String mcreateTime;
 
-    public Contents(String name, String content, int imageId) {
-        this.name = name;
-        this.imageId = imageId;
-        this.content = content;
+    public Contents(String authorName, String content, int imageId, int weiboLike, String createTime) {
+        this.mauthorName = authorName;
+        this.mimageId = imageId;
+        this.mcontent = content;
+        this.mweiboLike = weiboLike;
+        this.mcreateTime = createTime;
     }
 
     public String getName() {
-        return name;
+        return mauthorName;
     }
 
     public int getImageId() {
-        return imageId;
+        return mimageId;
     }
 
     public String getContent() {
-        return content;
+        return mcontent;
     }
+
+    public int getMweiboLike() {
+        return mweiboLike;
+    }
+
+    public String getMcreateTime() {
+        return mcreateTime;
+    }
+
 }

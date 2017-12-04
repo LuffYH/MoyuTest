@@ -12,9 +12,9 @@
         android:title="消息" />
     <item
         android:id="@+id/fl_post"
-        android:icon="@drawable/rect_orgin_auto"
+        android:icon="@drawable/edit"
         android:orderInCategory="1"
-        android:title="" />
+        android:title="发文" />
     <item
         android:id="@+id/discovery"
         android:icon="@drawable/tabbar_discover_auto"

@@ -11,8 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.moyutest.util.HttpUtil;
+import com.example.moyutest.util.Api;
+import com.example.moyutest.util.BaseActivity;
+import com.example.moyutest.util.RetrofitProvider;
 import com.example.moyutest.util.Utility;
+import com.google.gson.JsonObject;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -23,7 +26,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class PasswordActivity extends AppCompatActivity {
+public class PasswordActivity extends BaseActivity {
 
 
     private String phone, pw, code, nn, url, pw2, pwmd5;
@@ -51,6 +54,7 @@ public class PasswordActivity extends AppCompatActivity {
                 } else {
                     pwmd5 = new String(Hex.encodeHex(DigestUtils.md5(pw)));
                     code = new String(Hex.encodeHex(DigestUtils.md5(phone)));
+                    Log.d("Phone", "cose=" + code);
                     nn = nickname.getText().toString();
                     join();
 
@@ -60,19 +64,14 @@ public class PasswordActivity extends AppCompatActivity {
     }
 
     private void join() {
-        url = "http://114.67.134.219:8080/moyu/user/join";
-        final int flag = 1;
-        HttpUtil.postjoin(url, phone, pwmd5, nn, code, new Callback() {
+        final Api api = RetrofitProvider.create().create(Api.class);
+        api.password(phone, pwmd5, nn, code).enqueue(new retrofit2.Callback<JsonObject>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responsetext = response.body().string();
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+                String responsetext = response.body().toString();
                 String token = Utility.handlejoinResponse(responsetext, pwmd5, phone);
                 Log.d("Phone", "注册返回token = " + token);
+                Log.d("Phone", "pw=" + pwmd5);
                 if (token != null && !token.equals("")) {
                     SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
                     editor.putString("token", token);
@@ -82,10 +81,13 @@ public class PasswordActivity extends AppCompatActivity {
                     LoginActivity.mLoginActivity.finish();
                     finish();
                 } else {
-                    Looper.prepare();
                     Toast.makeText(PasswordActivity.this, "数据错误，注册失败", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
                 }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
             }
         });
     }

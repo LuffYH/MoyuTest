@@ -19,8 +19,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.moyutest.util.HttpUtil;
+import com.example.moyutest.util.Api;
+import com.example.moyutest.util.BaseActivity;
+import com.example.moyutest.util.RetrofitProvider;
 import com.example.moyutest.util.Utility;
+import com.google.gson.JsonObject;
 import com.mob.MobSDK;
 
 import java.io.IOException;
@@ -31,7 +34,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class RegistActivity extends AppCompatActivity implements View.OnClickListener {
+public class RegistActivity extends BaseActivity implements View.OnClickListener {
 
     private Toolbar toolbar;
     private EventHandler eventHandler;
@@ -93,50 +96,6 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
         // 注册监听器
         SMSSDK.registerEventHandler(eventHandler);
     }
-
-    //点击监听
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            View v = getCurrentFocus();
-            if (isShouldHideKeyboard(v, ev)) {
-                hideKeyboard(v.getWindowToken());
-            }
-        }
-
-        return super.dispatchTouchEvent(ev);
-    }
-
-    //判断是否点击edittext
-    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
-
-        if (v != null && (v instanceof EditText)) {
-            int[] l = {0, 0};
-            v.getLocationInWindow(l);
-            int left = l[0];
-            int top = l[1];
-            int bottom = top + v.getHeight();
-            int right = left + v.getWidth();
-            if (event.getRawX() > left && event.getRawX() < right && event.getRawY() > top && event.getRawY() < bottom) {
-                // 点击EditText的事件，忽略它。
-                return false;
-            } else {
-                return true;
-            }
-        }
-        // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditText上，和用户用轨迹球选择其他的焦点
-        return false;
-    }
-
-    //隐藏keyboard
-    private void hideKeyboard(IBinder token) {
-        if (token != null) {
-            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-
-
     @Override
     public void onClick(View v) {
         phoneNums = etphone.getText().toString();
@@ -148,7 +107,7 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
                 checkPhone(); // 判断输入号码是否正确
                 break;
             case R.id.btn_regist:
-                 SMSSDK.submitVerificationCode("86", phoneNums, etcode.getText().toString());
+                SMSSDK.submitVerificationCode("86", phoneNums, etcode.getText().toString());
                 break;
         }
     }
@@ -249,17 +208,12 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void checkPhone() {
-        String phoneUrl = "http://114.67.134.219:8080/moyu/user/registered";
-        HttpUtil.postphone(phoneUrl, phoneNums, new Callback() {
-
+        final Api api = RetrofitProvider.create().create(Api.class);
+        api.regist(phoneNums).enqueue(new retrofit2.Callback<JsonObject>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responseText = response.body().string();
+            public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+                Log.d("Phone", "注册response = " + response);
+                String responseText = response.body().toString();
                 String success = Utility.handleregistResponse(responseText);
                 Log.d("Phone", "注册手机号 = " + phoneNums);
                 if (success.equals("false")) {
@@ -267,15 +221,16 @@ public class RegistActivity extends AppCompatActivity implements View.OnClickLis
                     sendSMS();
                 } else if (success.equals("true")) {
                     Log.d("Phone", responseText + "已注册");
-                    Looper.prepare();
                     Toast.makeText(RegistActivity.this, "账号已经注册！", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
                 } else {
                     Log.d("Phone", "与服务器断开连接！" + responseText);
-                    Looper.prepare();
                     Toast.makeText(RegistActivity.this, "与服务器断开连接！", Toast.LENGTH_SHORT).show();
-                    Looper.loop();
                 }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
             }
         });
     }

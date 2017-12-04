@@ -1,3 +1,4 @@
+/*
 package com.example.moyutest.util;
 
 import okhttp3.FormBody;
@@ -5,9 +6,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
+*/
 /**
  * Created by Administrator on 2017/8/22.
- */
+ *//*
+
 
 public class HttpUtil {
     public static void sendOkHttpRequest(String address, okhttp3.Callback callback) {
@@ -48,3 +51,4 @@ public class HttpUtil {
     }
 }
 
+*/

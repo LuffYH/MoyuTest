@@ -25,20 +25,19 @@
                 app:layout_scrollFlags="scroll|enterAlways|snap">
 
                 <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
+                    android:paddingLeft="10dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
                     android:src="@drawable/search" />
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_weight="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
                     android:text="每日热搜:"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
             </LinearLayout>
 
         </android.support.design.widget.AppBarLayout>

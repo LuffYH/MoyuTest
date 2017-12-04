@@ -18,7 +18,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,24 +25,17 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.moyutest.model.MoyuUser;
-import com.example.moyutest.util.HttpUtil;
+import com.example.moyutest.util.Api;
+import com.example.moyutest.util.BaseActivity;
+import com.example.moyutest.util.RetrofitProvider;
 import com.example.moyutest.util.Utility;
-
+import com.google.gson.JsonObject;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
+import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;;
 
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
-
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
     private int screenHeight = 0;//屏幕高度
     private int keyHeight = 0; //软件盘弹起后所占高度
@@ -55,16 +47,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private LinearLayout mContent, mService;
     private TextView mRegister;
     public static Activity mLoginActivity = null;
+    private String mb, md5pw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mLoginActivity = this;
-        checklogin();
         //获取到SQLiteDatabase的实例
         SQLiteStudioService.instance().start(this);
         Connector.getDatabase();
+        checklogin();
         mBtnLogin = (Button) findViewById(R.id.btn_login);
         mEtMobile = (EditText) findViewById(R.id.et_mobile);
         mEtPassword = (EditText) findViewById(R.id.et_password);
@@ -194,49 +187,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-
-    //点击监听
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            View v = getCurrentFocus();
-            if (isShouldHideKeyboard(v, ev)) {
-                hideKeyboard(v.getWindowToken());
-            }
-        }
-
-        return super.dispatchTouchEvent(ev);
-    }
-
-    //判断是否点击edittext
-    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
-
-        if (v != null && (v instanceof EditText)) {
-            int[] l = {0, 0};
-            v.getLocationInWindow(l);
-            int left = l[0];
-            int top = l[1];
-            int bottom = top + v.getHeight();
-            int right = left + v.getWidth();
-            if (event.getRawX() > left && event.getRawX() < right && event.getRawY() > top && event.getRawY() < bottom) {
-                // 点击EditText的事件，忽略它。
-                return false;
-            } else {
-                return true;
-            }
-        }
-        // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditText上，和用户用轨迹球选择其他的焦点
-        return false;
-    }
-
-    //隐藏keyboard
-    private void hideKeyboard(IBinder token) {
-        if (token != null) {
-            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -263,23 +213,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intentRegist);
                 break;
             case R.id.btn_login:
-                String logurl = "http://114.67.134.219:8080/moyu/login";
-                String mb = mEtMobile.getText().toString();
-                String pw = mEtPassword.getText().toString();
-                String md5pw = new String(Hex.encodeHex(DigestUtils.md5(pw)));
-                SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
-                String token = pref.getString("token", "");
-                Long userid = DataSupport.findFirst(MoyuUser.class).getUserId();
-                HttpUtil.login(logurl, mb, md5pw, new Callback() {
+                mb = mEtMobile.getText().toString();
+                final String pw = mEtPassword.getText().toString();
+                md5pw = new String(Hex.encodeHex(DigestUtils.md5(pw)));
+                final Api api = RetrofitProvider.create().create(Api.class);
+                api.login(mb, md5pw).enqueue(new retrofit2.Callback<JsonObject>() {
                     @Override
-                    public void onFailure(Call call, IOException e) {
-
-                    }
-
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        String responseText = response.body().string();
-                        String tk = Utility.handletokenResponse(responseText);
+                    public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+                        String responseText = response.body().toString();
+                        String tk = Utility.handletokenResponse(responseText, md5pw, mb);
                         Log.d("Phone", "登陆返回Json" + responseText);
                         if (tk != null && !tk.equals("")) {
                             SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
@@ -289,10 +231,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             startActivity(intentMain);
                             finish();
                         } else {
-                            Looper.prepare();
                             Toast.makeText(LoginActivity.this, "登陆失败", Toast.LENGTH_SHORT).show();
-                            Looper.loop();
                         }
+                    }
+
+                    @Override
+                    public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+
                     }
                 });
                 break;

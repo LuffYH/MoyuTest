@@ -1,5 +1,6 @@
 package com.example.moyutest;
 
+import android.app.Activity;
 import android.app.LocalActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 
 import com.example.moyutest.adapter.MainFragmentPagerAdapter;
 import com.example.moyutest.adapter.MyViewPagerAdapter;
+import com.example.moyutest.util.BaseActivity;
 import com.example.moyutest.util.BottomNavigationViewHelper;
 
 import org.litepal.tablemanager.Connector;
@@ -29,22 +31,18 @@ import java.util.List;
 
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private ViewPager mViewPager;
     private MainFragmentPagerAdapter myFragmentPagerAdapter;
     private MainFragment mainfragment = new MainFragment();
-    private boolean loginFlag = false;
     private MenuItem menuItem;
-    //LocalActivityManager用来获取每个activity的view,放于Adapter中
-    //MyViewPageAdapter用来放viewpager的内容
-    //OnClickListener设置底部图片的点击事件
-    //OnPageChangeListener设置图片的滑动事件
     private LocalActivityManager manager;
     private MyViewPagerAdapter viewPageAdapter;
     private View.OnClickListener clickListener;
     private BottomNavigationView bottomNavigationView;
     private ViewPager.OnPageChangeListener pageChangeListener;
+    public static Activity mMainActivity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +50,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //连接SQLiteStudio
+        mMainActivity = this;
         SQLiteStudioService.instance().start(this);
         Connector.getDatabase();
-        checklogin();
+//        checklogin();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //取消动画
@@ -123,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
         AddActivitiesToViewPager();
         mViewPager.setCurrentItem(0);
     }
@@ -131,12 +129,27 @@ public class MainActivity extends AppCompatActivity {
     private void AddActivitiesToViewPager() {
         List<View> mViews = new ArrayList<View>();
         Intent intent = new Intent();
+
         intent.setClass(this, MoyuActivity.class);
         intent.putExtra("id", 1);
         mViews.add(getView("MoyuActivity", intent));
-        intent.setClass(this, MyActivity.class);
+
+        intent.setClass(this, MessageActivity.class);
         intent.putExtra("id", 2);
+        mViews.add(getView("Message", intent));
+
+        intent.setClass(this, PostActivity.class);
+        intent.putExtra("id", 3);
+        mViews.add(getView("Edit", intent));
+
+        intent.setClass(this, SearchActivity.class);
+        intent.putExtra("id", 4);
+        mViews.add(getView("Search", intent));
+
+        intent.setClass(this, MyActivity.class);
+        intent.putExtra("id", 5);
         mViews.add(getView("MyActivity", intent));
+
         viewPageAdapter = new MyViewPagerAdapter(mViews);
         mViewPager.setAdapter(viewPageAdapter);
 
@@ -147,68 +160,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void checklogin() {
-        SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
-        String token = pref.getString("token", "");
-        if (token != null && !token.equals("")) {
-            loginFlag = true;
-            Log.d("Phone", "登陆token = " + token);
-        }
-        if (loginFlag == false) {
-            Intent logintent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(logintent);
-            Log.d("Phone", "未登录状态");
-            finish();
-        }
-    }
-
-    //点击监听
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            View v = getCurrentFocus();
-            if (isShouldHideKeyboard(v, ev)) {
-                hideKeyboard(v.getWindowToken());
-            }
-        }
-
-        return super.dispatchTouchEvent(ev);
-    }
-
-    //判断是否点击edittext
-    private boolean isShouldHideKeyboard(View v, MotionEvent event) {
-
-        if (v != null && (v instanceof EditText)) {
-            int[] l = {0, 0};
-            v.getLocationInWindow(l);
-            int left = l[0];
-            int top = l[1];
-            int bottom = top + v.getHeight();
-            int right = left + v.getWidth();
-            if (event.getRawX() > left && event.getRawX() < right && event.getRawY() > top && event.getRawY() < bottom) {
-                // 点击EditText的事件，忽略它。
-                return false;
-            } else {
-                return true;
-            }
-        }
-        // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditText上，和用户用轨迹球选择其他的焦点
-        return false;
-    }
-
-    //隐藏keyboard
-    private void hideKeyboard(IBinder token) {
-        if (token != null) {
-            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            im.hideSoftInputFromWindow(token, InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-
+    //
+//    private void checklogin() {
+//        SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
+//        String token = pref.getString("token", "");
+//        if (token != null && !token.equals("")) {
+//            loginFlag = true;
+//            Log.d("Phone", "登陆token = " + token);
+//        }
+//        if (loginFlag == false) {
+//            Intent logintent = new Intent(MainActivity.this, LoginActivity.class);
+//            startActivity(logintent);
+//            Log.d("Phone", "未登录状态");
+//            finish();
+//        }
+//    }
     @Override
     protected void onDestroy() {
-        if (loginFlag == true) {
-            SQLiteStudioService.instance().stop();
-        }
+//        if (loginFlag == true) {
+//
+//        }
+        SQLiteStudioService.instance().stop();
         super.onDestroy();
     }
 }
