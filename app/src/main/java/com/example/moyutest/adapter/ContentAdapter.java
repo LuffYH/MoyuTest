@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -42,7 +41,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public ImageView newsImage;
         public TextView newsName;
         public TextView newscontent;
-        public TextView createtime,newsredirect,newscomment,newsfeedlike;
+        public TextView createtime, newsredirect, newscomment, newsfeedlike;
 
         public ItemViewHolder(View view) {
             super(view);
@@ -79,7 +78,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mContext = parent.getContext();
         }
         if (viewType == TYPE_ITEM) {
-            View view = LayoutInflater.from(mContext).inflate(R.layout.mentionlist_item, parent, false);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_weibo, parent, false);
             final ItemViewHolder itemViewHolder = new ItemViewHolder(view);
             itemViewHolder.linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -87,12 +86,15 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     int position = itemViewHolder.getAdapterPosition();
                     Contents contents = mContentsList.get(position);
                     Intent intent = new Intent(mContext, ContentActivity.class);
-                    intent.putExtra(ContentActivity.CONTENTS_NAME, contents.getAuthorName());
-                    intent.putExtra(ContentActivity.CONTENTS_IMAGE_ID, contents.getImageAmount());
+                    intent.putExtra(ContentActivity.CONTENTS_AUTHORNAME, contents.getAuthorName());
+                    intent.putExtra(ContentActivity.CONTENTS_IMAGEAMOUNT, contents.getImageAmount());
                     intent.putExtra(ContentActivity.CONTENTS_CONTENT, contents.getWeiboContent());
                     intent.putExtra(ContentActivity.CREATE_TIME, contents.getCreateTime());
                     intent.putExtra(ContentActivity.CONTENTS_COMMENTAMOUNT, contents.getCommentAmount());
                     intent.putExtra(ContentActivity.CONTENTS_WEIBOLIKE, contents.getWeiboLike());
+                    intent.putExtra(ContentActivity.CONTENTS_WEIBOID, contents.getWeiboId());
+                    intent.putExtra(ContentActivity.CONTENTS_AUTHORID, contents.getAuthorId());
+                    intent.putExtra(ContentActivity.AUTHOR_AVATAR, contents.getAuthorAvatar());
                     mContext.startActivity(intent);
                 }
             });
@@ -115,9 +117,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((ItemViewHolder) holder).newsName.setText(contents.getAuthorName());
             ((ItemViewHolder) holder).newscontent.setText(contents.getWeiboContent());
             ((ItemViewHolder) holder).createtime.setText(contents.getCreateTime());
-            ((ItemViewHolder) holder).newsfeedlike.setText("赞 "+contents.getWeiboLike());
+            ((ItemViewHolder) holder).newsfeedlike.setText("赞 " + contents.getWeiboLike());
 //            ((ItemViewHolder) holder).newsredirect.setText("转发 "+contents.getCommentAmount());
-            ((ItemViewHolder) holder).newscomment.setText("评论 "+contents.getCommentAmount());
+            ((ItemViewHolder) holder).newscomment.setText("评论 " + contents.getCommentAmount());
             Glide.with(mContext).load(contents.getImageAmount()).into(((ItemViewHolder) holder).newsImage);
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;

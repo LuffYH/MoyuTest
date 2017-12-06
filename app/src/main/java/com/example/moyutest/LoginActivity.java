@@ -2,13 +2,9 @@ package com.example.moyutest;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -30,7 +26,7 @@ import com.example.moyutest.util.Api;
 import com.example.moyutest.util.BaseActivity;
 import com.example.moyutest.util.RetrofitProvider;
 import com.example.moyutest.util.SharedPreferencesUtil;
-import com.example.moyutest.util.Utility;
+import com.example.moyutest.util.HandleResponse;
 import com.google.gson.JsonObject;
 
 import org.apache.commons.codec.binary.Hex;
@@ -237,7 +233,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                             @Override
                             public void onNext(JsonObject jsonObject) {
                                 String responseText = jsonObject.toString();
-                                String token = Utility.handletokenResponse(responseText, md5pw, mb);
+                                String token = HandleResponse.handletokenResponse(responseText, md5pw, mb);
                                 Log.d("Phone", "登陆返回Json" + responseText);
                                 if (token != null && !token.equals("")) {
                                     SharedPreferencesUtil.putTokenFromXml(LoginActivity.this, token);

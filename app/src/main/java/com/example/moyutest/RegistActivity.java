@@ -1,20 +1,14 @@
 package com.example.moyutest;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,17 +16,12 @@ import android.widget.Toast;
 import com.example.moyutest.util.Api;
 import com.example.moyutest.util.BaseActivity;
 import com.example.moyutest.util.RetrofitProvider;
-import com.example.moyutest.util.Utility;
+import com.example.moyutest.util.HandleResponse;
 import com.google.gson.JsonObject;
 import com.mob.MobSDK;
 
-import java.io.IOException;
-
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 public class RegistActivity extends BaseActivity implements View.OnClickListener {
 
@@ -215,7 +204,7 @@ public class RegistActivity extends BaseActivity implements View.OnClickListener
             public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
                 Log.d("Phone", "注册response = " + response);
                 String responseText = response.body().toString();
-                String obj = Utility.handleregistResponse(responseText);
+                String obj = HandleResponse.handleregistResponse(responseText);
                 Log.d("Phone", "注册手机号 = " + phoneNums);
                 if (obj.equals("false")) {
                     Log.d("Phone", responseText + "没注册");

@@ -62,6 +62,8 @@ public class MainFragment extends Fragment {
     private int mcommentAmount;
     private int mimageAmount;
     private int mweiboLike;
+    private int mweiboId;
+    private int mauthorId;
     private String mcreateTime;
     private Contents[] acontents;
     private RecyclerView recyclerView;
@@ -158,7 +160,9 @@ public class MainFragment extends Fragment {
                                 mweiboLike = WeiboBean.get(z).getWeiboLike();
                                 mcreateTime = WeiboBean.get(z).getCreateTime();
                                 mcommentAmount = WeiboBean.get(z).getCommentAmount();
-                                contentsList.add(new Contents(mauthorName, mauthorAvatar, mcontent, mimageAmount, mcommentAmount, mweiboLike, mcreateTime));
+                                mweiboId = WeiboBean.get(z).getWeiboId();
+                                mauthorId = WeiboBean.get(z).getAuthorId();
+                                contentsList.add(new Contents(mweiboId, mauthorId, mauthorName, mauthorAvatar, mcontent, mimageAmount, mcommentAmount, mweiboLike, mcreateTime));
                                 Log.d("Phone", mcontent);
                             }
                             Log.d("Phone", "flagnomore =" + flagnomore);

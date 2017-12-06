@@ -1,10 +1,7 @@
 package com.example.moyutest;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,17 +12,11 @@ import com.example.moyutest.util.Api;
 import com.example.moyutest.util.BaseActivity;
 import com.example.moyutest.util.RetrofitProvider;
 import com.example.moyutest.util.SharedPreferencesUtil;
-import com.example.moyutest.util.Utility;
+import com.example.moyutest.util.HandleResponse;
 import com.google.gson.JsonObject;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
-
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 public class PasswordActivity extends BaseActivity {
 
@@ -70,7 +61,7 @@ public class PasswordActivity extends BaseActivity {
             @Override
             public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
                 String responsetext = response.body().toString();
-                String token = Utility.handlejoinResponse(responsetext, pwmd5, phone);
+                String token = HandleResponse.handlejoinResponse(responsetext, pwmd5, phone);
                 Log.d("Phone", "注册返回token = " + token);
                 Log.d("Phone", "pw=" + pwmd5);
                 if (token != null && !token.equals("")) {

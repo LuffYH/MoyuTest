@@ -6,21 +6,20 @@ package com.example.moyutest.db;
 
 public class Contents {
 
+    private int weiboId;
+    private int authorId;
     private String authorName;
-
     private String authorAvatar;
-
     private String weiboContent;
-
-    private Integer imageAmount;
-
-    private Integer commentAmount;
-
-    private Integer weiboLike;
-
+    private int imageAmount;
+    private int commentAmount;
+    private int weiboLike;
     private String createTime;
 
-    public Contents(String mauthorName, String mauthorAvatar, String mcontent, int mimageAmount, int mcommentAmount, int mweiboLike, String mcreateTime) {
+
+    public Contents(int mweiboId,int mauthorId,String mauthorName, String mauthorAvatar, String mcontent, int mimageAmount, int mcommentAmount, int mweiboLike, String mcreateTime) {
+        this.weiboId = mweiboId;
+        this.authorId = mauthorId;
         this.createTime = mcreateTime;
         this.weiboLike = mweiboLike;
         this.authorAvatar = mauthorAvatar;
@@ -28,6 +27,21 @@ public class Contents {
         this.commentAmount = mcommentAmount;
         this.weiboContent = mcontent;
         this.imageAmount = mimageAmount;
+    }
+    public int getWeiboId() {
+        return weiboId;
+    }
+
+    public void setWeiboId(int weiboId) {
+        this.weiboId = weiboId;
+    }
+
+    public int getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
     }
 
     public String getAuthorName() {
