@@ -30,7 +30,6 @@ dependencies {
     })
     compile files('libs/SQLiteStudioRemote.jar')
     compile name: 'SMSSDK-3.0.0', ext: 'aar'
-    compile name: 'SMSSDKGUI-3.0.0', ext: 'aar'
 
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
 

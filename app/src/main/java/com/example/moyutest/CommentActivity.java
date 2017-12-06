@@ -1,14 +1,15 @@
 package com.example.moyutest;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.moyutest.model.MoyuUser;
 import com.example.moyutest.util.Api;
@@ -20,41 +21,59 @@ import com.google.gson.JsonObject;
 import org.litepal.crud.DataSupport;
 
 import io.reactivex.Observer;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MyActivity extends BaseActivity implements View.OnClickListener {
-    private TextView follow, fans, nickname;
-    private ImageView myphoto;
-    private LinearLayout exitll;
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
-    private Long id;
+public class CommentActivity extends BaseActivity implements View.OnClickListener {
+
+    private TextView cmcancel, cmsend;
+    private EditText etcomment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
-        follow = (TextView) findViewById(R.id.my_follow);
-        fans = (TextView) findViewById(R.id.my_fans);
-        nickname = (TextView) findViewById(R.id.my_nickname);
-        exitll = (LinearLayout) findViewById(R.id.exit);
-        MoyuUser user = DataSupport.findFirst(MoyuUser.class);
-        follow.setText(String.valueOf(user.getFollow()));
-        fans.setText(String.valueOf(user.getFollower()));
-        nickname.setText(user.getNickname());
-        myphoto = (ImageView) findViewById(R.id.my_photo);
-        exitll.setOnClickListener(this);
+        setContentView(R.layout.activity_comment);
+        cmcancel = (TextView) findViewById(R.id.comment_cancel);
+        etcomment = (EditText) findViewById(R.id.comment_content);
+        cmcancel.setOnClickListener(this);
+        cmsend = (TextView) findViewById(R.id.comment_send);
+        etcomment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!TextUtils.isEmpty(s)) {
+                    cmsend.setBackgroundColor(getResources().getColor(R.color.orange));
+                    cmsend.setTextColor(getResources().getColor(R.color.black));
+                } else if (TextUtils.isEmpty(s)) {
+                    cmsend.setBackgroundColor(getResources().getColor(R.color.white));
+                }
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.exit:
+            case R.id.comment_cancel:
+                finish();
+                break;
+            case R.id.comment_send:
                 String id_token = SharedPreferencesUtil.getIdTokenFromXml(this);
+                String id = SharedPreferencesUtil.getIdFromDB();
                 Api api = RetrofitProvider.create().create(Api.class);
-                api.logout(id_token).subscribeOn(Schedulers.io())
+                api.sendcomment(id, etcomment.getText().toString(), id_token)
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Observer<JsonObject>() {
                             @Override
@@ -64,11 +83,7 @@ public class MyActivity extends BaseActivity implements View.OnClickListener {
 
                             @Override
                             public void onNext(JsonObject jsonObject) {
-                                editor.clear().commit();
-                                DataSupport.deleteAll(MoyuUser.class, "userid = ?", String.valueOf(id));
-                                Intent intent = new Intent(MyActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                                MainActivity.mMainActivity.finish();
+
                             }
 
                             @Override
@@ -78,7 +93,7 @@ public class MyActivity extends BaseActivity implements View.OnClickListener {
 
                             @Override
                             public void onComplete() {
-                                Toast.makeText(MyActivity.this, "注销成功", Toast.LENGTH_SHORT).show();
+
                             }
                         });
                 break;

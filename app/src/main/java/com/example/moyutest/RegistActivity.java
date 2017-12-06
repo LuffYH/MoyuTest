@@ -96,6 +96,7 @@ public class RegistActivity extends BaseActivity implements View.OnClickListener
         // 注册监听器
         SMSSDK.registerEventHandler(eventHandler);
     }
+
     @Override
     public void onClick(View v) {
         phoneNums = etphone.getText().toString();
@@ -214,12 +215,12 @@ public class RegistActivity extends BaseActivity implements View.OnClickListener
             public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
                 Log.d("Phone", "注册response = " + response);
                 String responseText = response.body().toString();
-                String success = Utility.handleregistResponse(responseText);
+                String obj = Utility.handleregistResponse(responseText);
                 Log.d("Phone", "注册手机号 = " + phoneNums);
-                if (success.equals("false")) {
+                if (obj.equals("false")) {
                     Log.d("Phone", responseText + "没注册");
                     sendSMS();
-                } else if (success.equals("true")) {
+                } else if (obj.equals("true")) {
                     Log.d("Phone", responseText + "已注册");
                     Toast.makeText(RegistActivity.this, "账号已经注册！", Toast.LENGTH_SHORT).show();
                 } else {

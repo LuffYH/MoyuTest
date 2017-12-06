@@ -21,6 +21,7 @@ import com.example.moyutest.model.MoyuUser;
 import com.example.moyutest.model.Weibo;
 import com.example.moyutest.util.Api;
 import com.example.moyutest.util.RetrofitProvider;
+import com.example.moyutest.util.SharedPreferencesUtil;
 import com.google.gson.JsonObject;
 
 import org.litepal.crud.DataSupport;
@@ -57,7 +58,9 @@ public class MainFragment extends Fragment {
     private GridLayoutManager layoutManager;
     private String mauthorName;
     private String mcontent;
-    private int mimageId;
+    private String mauthorAvatar;
+    private int mcommentAmount;
+    private int mimageAmount;
     private int mweiboLike;
     private String mcreateTime;
     private Contents[] acontents;
@@ -88,14 +91,15 @@ public class MainFragment extends Fragment {
                 strFrom = "0";
                 times = 0;
                 initRefresh(strFrom, strSize);
-                adapter.changeMoreStatus(ContentAdapter.PULLUP_LOAD_MORE);
+
             }
         });
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == adapter.getItemCount()) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1
+                        == adapter.getItemCount()) {
                     adapter.changeMoreStatus(ContentAdapter.LOADING_MORE);
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -105,7 +109,10 @@ public class MainFragment extends Fragment {
                             initRefresh(strFrom, strSize);
                             Log.d("Phone", "flagnomore =" + flagnomore);
                         }
-                    },1000);
+                    }, 1000);
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1
+                        != adapter.getItemCount()) {
+                    adapter.changeMoreStatus(ContentAdapter.PULLUP_LOAD_MORE);
                 }
             }
 
@@ -119,11 +126,7 @@ public class MainFragment extends Fragment {
     }
 
     private void initRefresh(final String froms, String sizes) {
-        SharedPreferences pref = mContext.getSharedPreferences("data", mContext.MODE_PRIVATE);
-        MoyuUser moyuUser = DataSupport.findFirst(MoyuUser.class);
-        Long id = moyuUser.getUserId();
-        String token = pref.getString("token", "");
-        String id_token = id + "_" + token;
+        String id_token = SharedPreferencesUtil.getIdTokenFromXml(mContext);
         Api api = RetrofitProvider.create().create(Api.class);
         api.weibo(id_token, froms, sizes)
                 .subscribeOn(Schedulers.io())
@@ -133,6 +136,7 @@ public class MainFragment extends Fragment {
                     public void onSubscribe(Disposable d) {
 
                     }
+
                     @Override
                     public void onNext(Weibo weibo) {
                         if (froms.equals("0") || froms == "0") {
@@ -143,16 +147,18 @@ public class MainFragment extends Fragment {
                         if (WeiboBean == null) {
                             flagnomore = 0;
                             Log.d("Phone", "checkflag =" + flagnomore);
+                            adapter.changeMoreStatus(ContentAdapter.NO_MORE);
                         } else {
                             flagnomore = 1;
                             Log.d("Phone", "size = " + WeiboBean.size());
                             for (int z = 0; z < WeiboBean.size(); z++) {
                                 mauthorName = WeiboBean.get(z).getAuthorName();
                                 mcontent = WeiboBean.get(z).getWeiboContent();
-                                mimageId = WeiboBean.get(z).getImageNumber();
+                                mimageAmount = WeiboBean.get(z).getImageAmount();
                                 mweiboLike = WeiboBean.get(z).getWeiboLike();
                                 mcreateTime = WeiboBean.get(z).getCreateTime();
-                                contentsList.add(new Contents(mauthorName, mcontent, mimageId, mweiboLike, mcreateTime));
+                                mcommentAmount = WeiboBean.get(z).getCommentAmount();
+                                contentsList.add(new Contents(mauthorName, mauthorAvatar, mcontent, mimageAmount, mcommentAmount, mweiboLike, mcreateTime));
                                 Log.d("Phone", mcontent);
                             }
                             Log.d("Phone", "flagnomore =" + flagnomore);
@@ -165,15 +171,14 @@ public class MainFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(mContext, "获取失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "获取失败", Toast.LENGTH_LONG).show();
+                        swipeRefresh.setRefreshing(false);
                     }
 
                     @Override
                     public void onComplete() {
                         if (flagnomore == 1) {
-                            Toast.makeText(mContext, "成功", Toast.LENGTH_SHORT).show();
-                        } else {
-                            adapter.changeMoreStatus(ContentAdapter.NO_MORE);
+                            Toast.makeText(mContext, "加载成功", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

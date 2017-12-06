@@ -20,6 +20,7 @@ import com.example.moyutest.model.MoyuUser;
 import com.example.moyutest.util.Api;
 import com.example.moyutest.util.BaseActivity;
 import com.example.moyutest.util.RetrofitProvider;
+import com.example.moyutest.util.SharedPreferencesUtil;
 import com.example.moyutest.util.Utility;
 import com.google.gson.JsonObject;
 
@@ -40,7 +41,7 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_edit);
         etcontent = (EditText) findViewById(R.id.idea_content);
         send = (TextView) findViewById(R.id.idea_send);
-        cancal = (TextView) findViewById(R.id.idea_cancal);
+        cancal = (TextView) findViewById(R.id.idea_cancel);
         etcontent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -70,12 +71,7 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.idea_send:
-                SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
-                MoyuUser moyuUser = DataSupport.find(MoyuUser.class, 1);
-                Long id = moyuUser.getUserId();
-                String token = pref.getString("token", "");
-                String id_token = id + "_" + token;
-                Log.d("Phone", "id_token =" + id_token);
+                String id_token = SharedPreferencesUtil.getIdTokenFromXml(this);
                 final Api api = RetrofitProvider.create().create(Api.class);
                 api.sendweibo(etcontent.getText().toString(), id_token).enqueue(new Callback<JsonObject>() {
                     @Override
@@ -88,7 +84,7 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
                                     Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(EditActivity.this, "发送失败，清稍後重試",
+                            Toast.makeText(EditActivity.this, "发送失败，请稍后重试",
                                     Toast.LENGTH_LONG).show();
 
                         }
@@ -100,7 +96,7 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
                     }
                 });
                 break;
-            case R.id.idea_cancal:
+            case R.id.idea_cancel:
                 finish();
                 break;
             default:

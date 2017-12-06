@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.example.moyutest.util.Api;
 import com.example.moyutest.util.BaseActivity;
 import com.example.moyutest.util.RetrofitProvider;
+import com.example.moyutest.util.SharedPreferencesUtil;
 import com.example.moyutest.util.Utility;
 import com.google.gson.JsonObject;
 
@@ -73,9 +74,7 @@ public class PasswordActivity extends BaseActivity {
                 Log.d("Phone", "注册返回token = " + token);
                 Log.d("Phone", "pw=" + pwmd5);
                 if (token != null && !token.equals("")) {
-                    SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
-                    editor.putString("token", token);
-                    editor.commit();
+                    SharedPreferencesUtil.putTokenFromXml(PasswordActivity.this,token);
                     Intent successintent = new Intent(PasswordActivity.this, MainActivity.class);
                     startActivity(successintent);
                     LoginActivity.mLoginActivity.finish();

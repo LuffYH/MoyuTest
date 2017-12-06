@@ -8,7 +8,9 @@ import com.example.moyutest.model.MoyuUser;
 import com.example.moyutest.model.Weibo;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
 import java.util.Map;
+
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.Call;;
@@ -29,7 +31,7 @@ import retrofit2.http.QueryMap;
 public interface Api {
     @FormUrlEncoded
     @POST("login")
-    Call<JsonObject> login(@Field("mobile") String mobile, @Field("password") String password);
+    Observable<JsonObject> login(@Field("mobile") String mobile, @Field("password") String password);
 
     @FormUrlEncoded
     @POST("user/registered")
@@ -46,5 +48,13 @@ public interface Api {
 
     @GET("weibo/follow")
     Observable<Weibo> weibo(@Header("authorization") String id_token, @Query("from") String froms, @Query("size") String sizes);
+
+    @POST("logout")
+    Observable<JsonObject> logout(@Header("authorization") String id_token);
+
+
+    @FormUrlEncoded
+    @POST("weibo/commentugc")
+    Observable<JsonObject> sendcomment(@Field("wid") String weiboId, @Field("text") String weiboComment, @Header("authorization") String id_token);
 
 }

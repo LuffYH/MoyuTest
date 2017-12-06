@@ -36,12 +36,13 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public static final int LOADING_MORE = 1;
     //没有更多
     public static final int NO_MORE = 2;
+
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout linearLayout;
         public ImageView newsImage;
         public TextView newsName;
         public TextView newscontent;
-        public TextView createtime;
+        public TextView createtime,newsredirect,newscomment,newsfeedlike;
 
         public ItemViewHolder(View view) {
             super(view);
@@ -50,6 +51,9 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             newsName = (TextView) view.findViewById(R.id.profile_name);
             newscontent = (TextView) view.findViewById(R.id.mention_content);
             createtime = (TextView) view.findViewById(R.id.profile_time);
+            newsredirect = (TextView) view.findViewById(R.id.redirect);
+            newscomment = (TextView) view.findViewById(R.id.comment);
+            newsfeedlike = (TextView) view.findViewById(R.id.feedlike);
         }
     }
 
@@ -83,10 +87,12 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     int position = itemViewHolder.getAdapterPosition();
                     Contents contents = mContentsList.get(position);
                     Intent intent = new Intent(mContext, ContentActivity.class);
-                    intent.putExtra(ContentActivity.CONTENTS_NAME, contents.getName());
-                    intent.putExtra(ContentActivity.CONTENTS_IMAGE_ID, contents.getImageId());
-                    intent.putExtra(ContentActivity.CONTENTS_CONTENT, contents.getContent());
-                    intent.putExtra(ContentActivity.CREATE_TIME, contents.getMcreateTime());
+                    intent.putExtra(ContentActivity.CONTENTS_NAME, contents.getAuthorName());
+                    intent.putExtra(ContentActivity.CONTENTS_IMAGE_ID, contents.getImageAmount());
+                    intent.putExtra(ContentActivity.CONTENTS_CONTENT, contents.getWeiboContent());
+                    intent.putExtra(ContentActivity.CREATE_TIME, contents.getCreateTime());
+                    intent.putExtra(ContentActivity.CONTENTS_COMMENTAMOUNT, contents.getCommentAmount());
+                    intent.putExtra(ContentActivity.CONTENTS_WEIBOLIKE, contents.getWeiboLike());
                     mContext.startActivity(intent);
                 }
             });
@@ -106,10 +112,13 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
             Contents contents = mContentsList.get(position);
-            ((ItemViewHolder) holder).newsName.setText(contents.getName());
-            ((ItemViewHolder) holder).newscontent.setText(contents.getContent());
-            ((ItemViewHolder) holder).createtime.setText(contents.getMcreateTime());
-            Glide.with(mContext).load(contents.getImageId()).into(((ItemViewHolder) holder).newsImage);
+            ((ItemViewHolder) holder).newsName.setText(contents.getAuthorName());
+            ((ItemViewHolder) holder).newscontent.setText(contents.getWeiboContent());
+            ((ItemViewHolder) holder).createtime.setText(contents.getCreateTime());
+            ((ItemViewHolder) holder).newsfeedlike.setText("赞 "+contents.getWeiboLike());
+//            ((ItemViewHolder) holder).newsredirect.setText("转发 "+contents.getCommentAmount());
+            ((ItemViewHolder) holder).newscomment.setText("评论 "+contents.getCommentAmount());
+            Glide.with(mContext).load(contents.getImageAmount()).into(((ItemViewHolder) holder).newsImage);
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
             switch (load_more_status) {
@@ -138,7 +147,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        if (mContentsList.size() < 20) {
+        if (mContentsList.size() < 6) {
             return mContentsList.size();
         } else {
             return mContentsList.size() + 1;

@@ -159,28 +159,4 @@ public class MainActivity extends BaseActivity {
         return manager.startActivity(id, intent).getDecorView();
 
     }
-
-    //
-//    private void checklogin() {
-//        SharedPreferences pref = getSharedPreferences("data", MODE_PRIVATE);
-//        String token = pref.getString("token", "");
-//        if (token != null && !token.equals("")) {
-//            loginFlag = true;
-//            Log.d("Phone", "登陆token = " + token);
-//        }
-//        if (loginFlag == false) {
-//            Intent logintent = new Intent(MainActivity.this, LoginActivity.class);
-//            startActivity(logintent);
-//            Log.d("Phone", "未登录状态");
-//            finish();
-//        }
-//    }
-    @Override
-    protected void onDestroy() {
-//        if (loginFlag == true) {
-//
-//        }
-        SQLiteStudioService.instance().stop();
-        super.onDestroy();
-    }
 }

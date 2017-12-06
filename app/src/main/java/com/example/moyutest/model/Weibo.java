@@ -6,16 +6,17 @@ import java.util.List;
 
 
 public class Weibo extends DataSupport {
-    private String success;
+
+    private boolean success;
     private String msg;
     private String token;
     private List<ObjBean> obj;
 
-    public String getSuccess() {
+    public boolean isSuccess() {
         return success;
     }
 
-    public void setSuccess(String success) {
+    public void setSuccess(boolean success) {
         this.success = success;
     }
 
@@ -50,7 +51,8 @@ public class Weibo extends DataSupport {
         private String authorName;
         private String authorAvatar;
         private String weiboContent;
-        private int imageNumber;
+        private int imageAmount;
+        private int commentAmount;
         private int weiboLike;
         private String createTime;
 
@@ -94,12 +96,20 @@ public class Weibo extends DataSupport {
             this.weiboContent = weiboContent;
         }
 
-        public int getImageNumber() {
-            return imageNumber;
+        public int getImageAmount() {
+            return imageAmount;
         }
 
-        public void setImageNumber(int imageNumber) {
-            this.imageNumber = imageNumber;
+        public void setImageAmount(int imageAmount) {
+            this.imageAmount = imageAmount;
+        }
+
+        public int getCommentAmount() {
+            return commentAmount;
+        }
+
+        public void setCommentAmount(int commentAmount) {
+            this.commentAmount = commentAmount;
         }
 
         public int getWeiboLike() {

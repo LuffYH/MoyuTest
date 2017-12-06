@@ -25,14 +25,22 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.moyutest.util.Api;
 import com.example.moyutest.util.BaseActivity;
 import com.example.moyutest.util.RetrofitProvider;
+import com.example.moyutest.util.SharedPreferencesUtil;
 import com.example.moyutest.util.Utility;
 import com.google.gson.JsonObject;
+
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.litepal.tablemanager.Connector;
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
@@ -85,7 +93,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         String token = pref.getString("token", "");
         if (token != null && !token.equals("")) {
             loginFlag = true;
-            Log.d("Phone", "登陆token = " + token);
+            Log.d("Phone", "验证是否已经登录token = " + token);
         }
         if (loginFlag == true) {
             Intent logintent = new Intent(LoginActivity.this, MainActivity.class);
@@ -217,29 +225,40 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 final String pw = mEtPassword.getText().toString();
                 md5pw = new String(Hex.encodeHex(DigestUtils.md5(pw)));
                 final Api api = RetrofitProvider.create().create(Api.class);
-                api.login(mb, md5pw).enqueue(new retrofit2.Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(retrofit2.Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
-                        String responseText = response.body().toString();
-                        String tk = Utility.handletokenResponse(responseText, md5pw, mb);
-                        Log.d("Phone", "登陆返回Json" + responseText);
-                        if (tk != null && !tk.equals("")) {
-                            SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
-                            editor.putString("token", tk);
-                            editor.commit();
-                            Intent intentMain = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intentMain);
-                            finish();
-                        } else {
-                            Toast.makeText(LoginActivity.this, "登陆失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                api.login(mb, md5pw).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<JsonObject>() {
 
-                    @Override
-                    public void onFailure(retrofit2.Call<JsonObject> call, Throwable t) {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
-                    }
-                });
+                            }
+
+                            @Override
+                            public void onNext(JsonObject jsonObject) {
+                                String responseText = jsonObject.toString();
+                                String token = Utility.handletokenResponse(responseText, md5pw, mb);
+                                Log.d("Phone", "登陆返回Json" + responseText);
+                                if (token != null && !token.equals("")) {
+                                    SharedPreferencesUtil.putTokenFromXml(LoginActivity.this, token);
+                                    Intent intentMain = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intentMain);
+                                    finish();
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "登陆失败", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
                 break;
         }
     }

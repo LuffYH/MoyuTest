@@ -46,17 +46,17 @@ public class Utility {
     }
 
     public static String handleregistResponse(String response) {
-        String success = "";
+        String obj = "";
         if (!TextUtils.isEmpty(response)) {
             try {
                 JSONObject registObject = new JSONObject(response);
-                success = registObject.getString("success");
-                return success;
+                obj = registObject.getString("obj");
+                return obj;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        return success;
+        return obj;
     }
 
     public static String handletokenResponse(String response, String pw, String phone) {
@@ -70,7 +70,7 @@ public class Utility {
                 String Content = jsonObject.toString();
                 MoyuUser user = gson.fromJson(Content, MoyuUser.class);
                 token = gson.fromJson(tokenString, String.class);
-                Log.d("Phone", "token =" + token);
+                Log.d("Phone", "登录token =" + token);
                 user.setPassword(pw);
                 user.setMobile(phone);
                 Log.d("Phone", pw + "+" + phone);
@@ -100,7 +100,22 @@ public class Utility {
         }
         return content;
     }
-
+    public static boolean sendcomment(String response) {
+        boolean comment = false;
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject commentObject = new JSONObject(response);
+                String success = commentObject.getString("success");
+                if (success != null && !success.equals("") && success.equals("true")) {
+                    comment = true;
+                }
+                return comment;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return comment;
+    }
     public static boolean weibo(String response) {
 //        List<Weibo> weibos = null;
         boolean content = false;
@@ -112,9 +127,6 @@ public class Utility {
                 if (success != null && !success.equals("") && success.equals("true")) {
                     content = true;
                 }
- /*               JSONObject jsonObject = weiboObject.getJSONObject("obj");
-                weibos = gson.fromJson();
-                Log.d("Phone", weibos + "");*/
                 return content;
             } catch (JSONException e) {
                 e.printStackTrace();

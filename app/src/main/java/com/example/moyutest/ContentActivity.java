@@ -8,49 +8,63 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.moyutest.adapter.ContentAdapter;
 import com.example.moyutest.util.BaseActivity;
 
-public class ContentActivity extends BaseActivity {
+public class ContentActivity extends BaseActivity implements View.OnClickListener {
 
-    public static final String CONTENTS_NAME = "news_name";
-    public static final String CONTENTS_IMAGE_ID = "news_image_id";
-    public static final String CONTENTS_CONTENT = "news_content";
+    public static final String CONTENTS_NAME = "contents_name";
+    public static final String CONTENTS_IMAGE_ID = "contents_image_id";
+    public static final String CONTENTS_CONTENT = "contents_content";
     public static final String CREATE_TIME = "create_time";
+    public static final String CONTENTS_COMMENTAMOUNT = "news_commentAmount";
+    public static final String CONTENTS_WEIBOLIKE = "news_weiboLike";
+    private TextView cancle, newsName, newscontent, createtime;
+    private ImageView newsImage;
+    private LinearLayout comment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_content);
+        setContentView(R.layout.weiboitem_detail);
         Intent intent = getIntent();
         String contentname = intent.getStringExtra(CONTENTS_NAME);
         int imageid = intent.getIntExtra(CONTENTS_IMAGE_ID, 0);
         String content = intent.getStringExtra(CONTENTS_CONTENT);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.coolapsing_toolbar);
-        ImageView fruitImageView = (ImageView) findViewById(R.id.image_view);
-        TextView fruitContentText = (TextView) findViewById(R.id.content_text);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-        collapsingToolbar.setTitle(contentname);
-        Glide.with(this).load(imageid).into(fruitImageView);
-        fruitContentText.setText(content);
+        String contentcreatetime = intent.getStringExtra(CREATE_TIME);
+        newsImage = (ImageView) findViewById(R.id.profile_img);
+        newsName = (TextView) findViewById(R.id.profile_name);
+        newscontent = (TextView) findViewById(R.id.mention_content);
+        createtime = (TextView) findViewById(R.id.profile_time);
+        cancle = (TextView) findViewById(R.id.detail_cancel);
+        comment = (LinearLayout) findViewById(R.id.bottombar_comment);
+        newscontent.setText(content);
+        newsName.setText(contentname);
+        createtime.setText(contentcreatetime);
+        Glide.with(this).load(imageid).into(newsImage);
+        cancle.setOnClickListener(this);
+        comment.setOnClickListener(this);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.detail_cancel:
                 finish();
-                return true;
+                break;
+            case R.id.bottombar_comment:
+                Intent commentintent = new Intent(ContentActivity.this, CommentActivity.class);
+                startActivity(commentintent);
+                break;
+            default:
+                break;
         }
-        return super.onOptionsItemSelected(item);
     }
 }

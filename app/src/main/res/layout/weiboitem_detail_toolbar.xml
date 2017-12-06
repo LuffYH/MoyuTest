@@ -5,14 +5,14 @@
     android:background="@color/topbar_bg">
 
     <TextView
-        android:id="@+id/idea_cancel"
+        android:id="@+id/detail_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:clickable="true"
         android:padding="10dp"
-        android:text="取消"
+        android:text="返回"
         android:textColor="@color/cancel_text"
         android:textSize="16sp" />
 
@@ -29,37 +29,25 @@
             android:id="@+id/inputType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="发微博"
+            android:text="微博正文"
             android:textColor="@color/middle_send_text"
             android:textSize="17sp" />
 
-        <TextView
-            android:id="@+id/idea_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="分享新鲜事"
-            android:textColor="@color/middle_username_text"
-            android:textSize="12sp" />
-
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/idea_send"
-        android:layout_width="48dp"
-        android:layout_height="31dp"
+    <ImageView
+        android:id="@+id/popover_arrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="12dp"
-        android:background="@drawable/normal_send_button_bg"
-        android:gravity="center"
-        android:text="发送"
-        android:textColor="@color/normal_send_button_text"
-        android:textSize="16sp" />
+        android:paddingRight="8dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/timeline_icon_more" />
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/topbar_bottom_drive"/>
+        android:background="@color/topbar_bottom_drive" />
 </RelativeLayout>
