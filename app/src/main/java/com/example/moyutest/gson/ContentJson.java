@@ -1,11 +1,11 @@
-package com.example.moyutest.model;
+package com.example.moyutest.gson;
 
 import org.litepal.crud.DataSupport;
 
 import java.util.List;
 
 
-public class Weibo extends DataSupport {
+public class ContentJson {
 
     private boolean success;
     private String msg;
@@ -126,6 +126,21 @@ public class Weibo extends DataSupport {
 
         public void setCreateTime(String createTime) {
             this.createTime = createTime;
+        }
+
+        @Override
+        public String toString() {
+            return "ObjBean{" +
+                    "weiboId=" + weiboId +
+                    ", authorId=" + authorId +
+                    ", authorName='" + authorName + '\'' +
+                    ", authorAvatar='" + authorAvatar + '\'' +
+                    ", weiboContent='" + weiboContent + '\'' +
+                    ", imageAmount=" + imageAmount +
+                    ", commentAmount=" + commentAmount +
+                    ", weiboLike=" + weiboLike +
+                    ", createTime='" + createTime + '\'' +
+                    '}';
         }
     }
 }

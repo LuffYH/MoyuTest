@@ -1,27 +1,23 @@
 package com.example.moyutest;
 
-import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.moyutest.model.MoyuUser;
 import com.example.moyutest.util.Api;
 import com.example.moyutest.util.BaseActivity;
 import com.example.moyutest.util.RetrofitProvider;
 import com.example.moyutest.util.SharedPreferencesUtil;
+import com.example.moyutest.util.HandleResponse;
 import com.google.gson.JsonObject;
 
-import org.litepal.crud.DataSupport;
-
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -36,9 +32,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
         cmcancel = (TextView) findViewById(R.id.comment_cancel);
-        etcomment = (EditText) findViewById(R.id.comment_content);
-        cmcancel.setOnClickListener(this);
+        etcomment = (EditText) findViewById(R.id.comment_text);
         cmsend = (TextView) findViewById(R.id.comment_send);
+        cmcancel.setOnClickListener(this);
+        cmsend.setOnClickListener(this);
         etcomment.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -69,10 +66,11 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 finish();
                 break;
             case R.id.comment_send:
+                Intent idintent = getIntent();
                 String id_token = SharedPreferencesUtil.getIdTokenFromXml(this);
-                String id = SharedPreferencesUtil.getIdFromDB();
+                int wid = idintent.getIntExtra("weiboid", 0);
                 Api api = RetrofitProvider.create().create(Api.class);
-                api.sendcomment(id, etcomment.getText().toString(), id_token)
+                api.sendcomment(String.valueOf(wid), etcomment.getText().toString(), id_token)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Observer<JsonObject>() {
@@ -83,7 +81,17 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
                             @Override
                             public void onNext(JsonObject jsonObject) {
+                                String responseText = jsonObject.toString();
+                                boolean sendflag = HandleResponse.sendcomment(responseText);
+                                if (sendflag) {
+                                    Toast.makeText(CommentActivity.this, "发送成功",
+                                            Toast.LENGTH_SHORT).show();
+                                    finish();
+                                } else {
+                                    Toast.makeText(CommentActivity.this, "发送失败，请稍后重试",
+                                            Toast.LENGTH_LONG).show();
 
+                                }
                             }
 
                             @Override

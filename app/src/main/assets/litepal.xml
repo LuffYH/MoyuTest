@@ -3,6 +3,6 @@
     <dbname value="MoyuTest" />
     <version value="1" />
     <list>
-        <mapping class="com.example.moyutest.model.MoyuUser" />
+        <mapping class="com.example.moyutest.db.MoyuUser" />
     </list>
 </litepal>

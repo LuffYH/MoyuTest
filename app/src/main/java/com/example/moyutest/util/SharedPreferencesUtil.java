@@ -4,7 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.example.moyutest.model.MoyuUser;
+import com.example.moyutest.ContentActivity;
+import com.example.moyutest.db.MoyuUser;
 
 import org.litepal.crud.DataSupport;
 
@@ -23,10 +24,16 @@ public class SharedPreferencesUtil {
         return id_token;
     }
 
-    public static void putTokenFromXml(Context mcontext,String token) {
+    public static void putTokenFromXml(Context mcontext, String token) {
         SharedPreferences.Editor editor = mcontext.getSharedPreferences("data", mcontext.MODE_PRIVATE).edit();
         editor.putString("token", token);
         editor.commit();
+    }
+
+    public static void cleanToken(Context mcontext) {
+        SharedPreferences.Editor editor = mcontext.getSharedPreferences("data", mcontext.MODE_PRIVATE).edit();
+        editor.clear().commit();
+
     }
 
     public static String getIdFromDB() {

@@ -19,7 +19,7 @@
     <!-- 古董白 -->
     <color name="navajowhite">#ffdead</color>
     <!-- 纳瓦白 -->
-
+    <color name="gallery_blue">#000</color>
     <!-- 灰色 -->
     <color name="gainsboro">#dcdcdc</color>
     <!-- 淡灰色 -->

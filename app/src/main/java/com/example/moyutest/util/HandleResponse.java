@@ -3,22 +3,17 @@ package com.example.moyutest.util;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.moyutest.model.MoyuUser;
-import com.example.moyutest.model.Weibo;
+import com.example.moyutest.db.MoyuUser;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/8/22.
  */
 
-public class Utility {
+public class HandleResponse {
 
     public static String handlejoinResponse(String response, String pw, String phone) {
         String token = "";
@@ -58,7 +53,19 @@ public class Utility {
         }
         return obj;
     }
-
+    public static String handlerupload(String response) {
+        String obj = "";
+        if (!TextUtils.isEmpty(response)) {
+            try {
+                JSONObject upload = new JSONObject(response);
+                obj = upload.getString("obj");
+                return obj;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return obj;
+    }
     public static String handletokenResponse(String response, String pw, String phone) {
         String token = "";
         if (!TextUtils.isEmpty(response)) {
@@ -117,7 +124,7 @@ public class Utility {
         return comment;
     }
     public static boolean weibo(String response) {
-//        List<Weibo> weibos = null;
+//        List<ContentJson> weibos = null;
         boolean content = false;
         if (!TextUtils.isEmpty(response)) {
             try {

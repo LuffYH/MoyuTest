@@ -12,11 +12,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.moyutest.adapter.MainFragmentPagerAdapter;
 import com.example.moyutest.adapter.MyViewPagerAdapter;
@@ -34,15 +36,13 @@ import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
 public class MainActivity extends BaseActivity {
 
     private ViewPager mViewPager;
-    private MainFragmentPagerAdapter myFragmentPagerAdapter;
     private MainFragment mainfragment = new MainFragment();
     private MenuItem menuItem;
     private LocalActivityManager manager;
     private MyViewPagerAdapter viewPageAdapter;
-    private View.OnClickListener clickListener;
     private BottomNavigationView bottomNavigationView;
-    private ViewPager.OnPageChangeListener pageChangeListener;
     public static Activity mMainActivity = null;
+    private long exitfirstTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,5 +158,20 @@ public class MainActivity extends BaseActivity {
     private View getView(String id, Intent intent) {
         return manager.startActivity(id, intent).getDecorView();
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (System.currentTimeMillis() - exitfirstTime > 2000) {
+                Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                exitfirstTime = System.currentTimeMillis();
+            } else {
+                finish();
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

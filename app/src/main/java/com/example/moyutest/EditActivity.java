@@ -1,35 +1,26 @@
 package com.example.moyutest;
 
 
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.support.annotation.DrawableRes;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.moyutest.model.MoyuUser;
 import com.example.moyutest.util.Api;
 import com.example.moyutest.util.BaseActivity;
 import com.example.moyutest.util.RetrofitProvider;
 import com.example.moyutest.util.SharedPreferencesUtil;
-import com.example.moyutest.util.Utility;
+import com.example.moyutest.util.HandleResponse;
 import com.google.gson.JsonObject;
-
-import org.litepal.crud.DataSupport;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Header;
 
 public class EditActivity extends BaseActivity implements View.OnClickListener {
     private EditText etcontent;
@@ -78,7 +69,7 @@ public class EditActivity extends BaseActivity implements View.OnClickListener {
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                         String responseText = response.body().toString();
                         Log.d("Phone", "微博responseText" + responseText);
-                        boolean sendflag = Utility.sendweibo(responseText);
+                        boolean sendflag = HandleResponse.sendweibo(responseText);
                         if (sendflag) {
                             Toast.makeText(EditActivity.this, "发送成功",
                                     Toast.LENGTH_SHORT).show();

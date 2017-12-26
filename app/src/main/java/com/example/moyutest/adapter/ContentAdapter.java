@@ -3,6 +3,7 @@ package com.example.moyutest.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.moyutest.ContentActivity;
 import com.example.moyutest.R;
-import com.example.moyutest.db.Contents;
+import com.example.moyutest.model.Contents;
 
 import java.util.List;
 
@@ -38,21 +39,21 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         public LinearLayout linearLayout;
-        public ImageView newsImage;
-        public TextView newsName;
-        public TextView newscontent;
-        public TextView createtime, newsredirect, newscomment, newsfeedlike;
+        public ImageView contentImage;
+        public TextView contentName;
+        public TextView contentcontent;
+        public TextView createtime, contentredirect, contentcomment, contentfeedlike;
 
         public ItemViewHolder(View view) {
             super(view);
             linearLayout = (LinearLayout) view;
-            newsImage = (ImageView) view.findViewById(R.id.profile_img);
-            newsName = (TextView) view.findViewById(R.id.profile_name);
-            newscontent = (TextView) view.findViewById(R.id.mention_content);
+            contentImage = (ImageView) view.findViewById(R.id.profile_img);
+            contentName = (TextView) view.findViewById(R.id.profile_name);
+            contentcontent = (TextView) view.findViewById(R.id.mention_content);
             createtime = (TextView) view.findViewById(R.id.profile_time);
-            newsredirect = (TextView) view.findViewById(R.id.redirect);
-            newscomment = (TextView) view.findViewById(R.id.comment);
-            newsfeedlike = (TextView) view.findViewById(R.id.feedlike);
+            contentredirect = (TextView) view.findViewById(R.id.redirect);
+            contentcomment = (TextView) view.findViewById(R.id.comment);
+            contentfeedlike = (TextView) view.findViewById(R.id.feedlike);
         }
     }
 
@@ -65,6 +66,7 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public FootViewHolder(View view) {
             super(view);
             foot_view_item_tv = (TextView) view.findViewById(R.id.foot_view);
+
         }
     }
 
@@ -114,18 +116,22 @@ public class ContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
             Contents contents = mContentsList.get(position);
-            ((ItemViewHolder) holder).newsName.setText(contents.getAuthorName());
-            ((ItemViewHolder) holder).newscontent.setText(contents.getWeiboContent());
+            ((ItemViewHolder) holder).contentName.setText(contents.getAuthorName());
+            ((ItemViewHolder) holder).contentcontent.setText(contents.getWeiboContent());
             ((ItemViewHolder) holder).createtime.setText(contents.getCreateTime());
-            ((ItemViewHolder) holder).newsfeedlike.setText("赞 " + contents.getWeiboLike());
+            ((ItemViewHolder) holder).contentfeedlike.setText("赞 " + contents.getWeiboLike());
 //            ((ItemViewHolder) holder).newsredirect.setText("转发 "+contents.getCommentAmount());
-            ((ItemViewHolder) holder).newscomment.setText("评论 " + contents.getCommentAmount());
-            Glide.with(mContext).load(contents.getImageAmount()).into(((ItemViewHolder) holder).newsImage);
+            if (contents.getCommentAmount() != 0) {
+                ((ItemViewHolder) holder).contentcomment.setText("评论 " + (contents.getCommentAmount() - 1));
+            } else {
+                ((ItemViewHolder) holder).contentcomment.setText("评论 " + contents.getCommentAmount());
+            }
+            Glide.with(mContext).load("http://10.4.105.32:8080/moyu/images/avatar/" + contents.getAuthorAvatar()).into(((ItemViewHolder) holder).contentImage);
         } else if (holder instanceof FootViewHolder) {
             FootViewHolder footViewHolder = (FootViewHolder) holder;
             switch (load_more_status) {
                 case PULLUP_LOAD_MORE:
-                    footViewHolder.foot_view_item_tv.setText("上滑正在加载");
+                    footViewHolder.foot_view_item_tv.setText("上滑加载更多");
                     break;
                 case LOADING_MORE:
                     footViewHolder.foot_view_item_tv.setText("正在加载更多数据...");

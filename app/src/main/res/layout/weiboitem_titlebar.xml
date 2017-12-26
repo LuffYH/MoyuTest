@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:paddingLeft="8dp">
 
-    <include layout="@layout/weiboitem_profileimg" />
+    <include layout="@layout/profileimg_weiboitem" />
 
     <LinearLayout
         android:layout_width="match_parent"

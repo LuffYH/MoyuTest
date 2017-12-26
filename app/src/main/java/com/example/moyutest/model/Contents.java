@@ -1,4 +1,4 @@
-package com.example.moyutest.db;
+package com.example.moyutest.model;
 
 /**
  * Created by Administrator on 2017/8/18.

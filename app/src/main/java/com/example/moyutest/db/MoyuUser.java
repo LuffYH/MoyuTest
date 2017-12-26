@@ -1,4 +1,4 @@
-package com.example.moyutest.model;
+package com.example.moyutest.db;
 
 import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;

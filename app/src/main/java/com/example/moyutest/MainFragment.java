@@ -1,7 +1,6 @@
 package com.example.moyutest;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -16,29 +15,19 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.moyutest.adapter.ContentAdapter;
-import com.example.moyutest.db.Contents;
-import com.example.moyutest.model.MoyuUser;
-import com.example.moyutest.model.Weibo;
+import com.example.moyutest.gson.ContentJson;
+import com.example.moyutest.model.Contents;
 import com.example.moyutest.util.Api;
 import com.example.moyutest.util.RetrofitProvider;
 import com.example.moyutest.util.SharedPreferencesUtil;
-import com.google.gson.JsonObject;
-
-import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.Delayed;
 
-import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 @SuppressWarnings("deprecation")
@@ -109,7 +98,6 @@ public class MainFragment extends Fragment {
                             strFrom = String.valueOf(intFrom);
                             Log.d("Phone", "strFrom =" + strFrom);
                             initRefresh(strFrom, strSize);
-                            Log.d("Phone", "flagnomore =" + flagnomore);
                         }
                     }, 1000);
                 } else if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1
@@ -133,20 +121,20 @@ public class MainFragment extends Fragment {
         api.weibo(id_token, froms, sizes)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Weibo>() {
+                .subscribe(new Observer<ContentJson>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(Weibo weibo) {
+                    public void onNext(ContentJson weibo) {
                         if (froms.equals("0") || froms == "0") {
                             recyclerView.removeAllViews();
                             contentsList.clear();
                         }
-                        List<Weibo.ObjBean> WeiboBean = weibo.getObj();
-                        if (WeiboBean == null) {
+                        List<ContentJson.ObjBean> WeiboBean = weibo.getObj();
+                        if (WeiboBean == null || WeiboBean.size() == 0) {
                             flagnomore = 0;
                             Log.d("Phone", "checkflag =" + flagnomore);
                             adapter.changeMoreStatus(ContentAdapter.NO_MORE);
@@ -161,9 +149,10 @@ public class MainFragment extends Fragment {
                                 mcreateTime = WeiboBean.get(z).getCreateTime();
                                 mcommentAmount = WeiboBean.get(z).getCommentAmount();
                                 mweiboId = WeiboBean.get(z).getWeiboId();
+                                mauthorAvatar = WeiboBean.get(z).getAuthorAvatar();
                                 mauthorId = WeiboBean.get(z).getAuthorId();
                                 contentsList.add(new Contents(mweiboId, mauthorId, mauthorName, mauthorAvatar, mcontent, mimageAmount, mcommentAmount, mweiboLike, mcreateTime));
-                                Log.d("Phone", mcontent);
+                                Log.d("Phone", "" + WeiboBean);
                             }
                             Log.d("Phone", "flagnomore =" + flagnomore);
                             times++;
