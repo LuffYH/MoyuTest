@@ -86,6 +86,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 if (sendflag) {
                                     Toast.makeText(CommentActivity.this, "发送成功",
                                             Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent();
+                                    setResult(2, intent);
                                     finish();
                                 } else {
                                     Toast.makeText(CommentActivity.this, "发送失败，请稍后重试",

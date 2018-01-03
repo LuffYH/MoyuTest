@@ -1,7 +1,5 @@
 package com.example.moyutest.gson;
 
-import org.litepal.crud.DataSupport;
-
 import java.util.List;
 
 
@@ -46,22 +44,24 @@ public class ContentJson {
 
     public static class ObjBean {
 
-        private int weiboId;
+
+        private int microBlogId;
         private int authorId;
+        private String content;
+        private int imageAmount;
+        private String createTime;
         private String authorName;
         private String authorAvatar;
-        private String weiboContent;
-        private int imageAmount;
         private int commentAmount;
-        private int weiboLike;
-        private String createTime;
+        private int likeAmount;
+        private boolean myLike;
 
-        public int getWeiboId() {
-            return weiboId;
+        public int getMicroBlogId() {
+            return microBlogId;
         }
 
-        public void setWeiboId(int weiboId) {
-            this.weiboId = weiboId;
+        public void setMicroBlogId(int microBlogId) {
+            this.microBlogId = microBlogId;
         }
 
         public int getAuthorId() {
@@ -70,6 +70,30 @@ public class ContentJson {
 
         public void setAuthorId(int authorId) {
             this.authorId = authorId;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public int getImageAmount() {
+            return imageAmount;
+        }
+
+        public void setImageAmount(int imageAmount) {
+            this.imageAmount = imageAmount;
+        }
+
+        public String getCreateTime() {
+            return createTime;
+        }
+
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
         }
 
         public String getAuthorName() {
@@ -88,22 +112,6 @@ public class ContentJson {
             this.authorAvatar = authorAvatar;
         }
 
-        public String getWeiboContent() {
-            return weiboContent;
-        }
-
-        public void setWeiboContent(String weiboContent) {
-            this.weiboContent = weiboContent;
-        }
-
-        public int getImageAmount() {
-            return imageAmount;
-        }
-
-        public void setImageAmount(int imageAmount) {
-            this.imageAmount = imageAmount;
-        }
-
         public int getCommentAmount() {
             return commentAmount;
         }
@@ -112,35 +120,20 @@ public class ContentJson {
             this.commentAmount = commentAmount;
         }
 
-        public int getWeiboLike() {
-            return weiboLike;
+        public int getLikeAmount() {
+            return likeAmount;
         }
 
-        public void setWeiboLike(int weiboLike) {
-            this.weiboLike = weiboLike;
+        public void setLikeAmount(int likeAmount) {
+            this.likeAmount = likeAmount;
         }
 
-        public String getCreateTime() {
-            return createTime;
+        public boolean isMyLike() {
+            return myLike;
         }
 
-        public void setCreateTime(String createTime) {
-            this.createTime = createTime;
-        }
-
-        @Override
-        public String toString() {
-            return "ObjBean{" +
-                    "weiboId=" + weiboId +
-                    ", authorId=" + authorId +
-                    ", authorName='" + authorName + '\'' +
-                    ", authorAvatar='" + authorAvatar + '\'' +
-                    ", weiboContent='" + weiboContent + '\'' +
-                    ", imageAmount=" + imageAmount +
-                    ", commentAmount=" + commentAmount +
-                    ", weiboLike=" + weiboLike +
-                    ", createTime='" + createTime + '\'' +
-                    '}';
+        public void setMyLike(boolean myLike) {
+            this.myLike = myLike;
         }
     }
 }

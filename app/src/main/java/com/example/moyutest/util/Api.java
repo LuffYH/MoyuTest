@@ -6,6 +6,7 @@ package com.example.moyutest.util;
 
 import com.example.moyutest.gson.CommentJson;
 import com.example.moyutest.gson.ContentJson;
+import com.example.moyutest.gson.PersonJson;
 import com.google.gson.JsonObject;
 
 import io.reactivex.Observable;
@@ -28,18 +29,18 @@ import retrofit2.http.Query;
 public interface Api {
     @FormUrlEncoded
     @POST("login")
-    Observable<JsonObject> login(@Field("mobile") String mobile, @Field("password") String password);
+    Observable<JsonObject> login(@Field("phone") String phone, @Field("password") String password);
 
     @POST("logout")
     Observable<JsonObject> logout(@Header("authorization") String id_token);
 
     @FormUrlEncoded
     @POST("user/registered")
-    Call<JsonObject> regist(@Field("mobile") String mobile);
+    Call<JsonObject> regist(@Field("phone") String phone);
 
     @FormUrlEncoded
     @POST("user/join")
-    Call<JsonObject> password(@Field("mobile") String mobile, @Field("password") String password,
+    Call<JsonObject> password(@Field("phone") String phone, @Field("password") String password,
                               @Field("nickname") String nickname, @Field("code") String code);
 
     @FormUrlEncoded
@@ -47,7 +48,7 @@ public interface Api {
     Call<JsonObject> sendweibo(@Field("text") String weiboContent, @Header("authorization") String id_token);
 
     @GET("weibo/follow")
-    Observable<ContentJson> weibo(@Header("authorization") String id_token, @Query("from") String froms, @Query("size") String sizes);
+    Observable<ContentJson> weibo(@Header("authorization") String id_token, @Query("page") int page, @Query("size") int sizes, @Query("order") String order, @Query("column") String column);
 
 
     @FormUrlEncoded
@@ -55,12 +56,49 @@ public interface Api {
     Observable<JsonObject> sendcomment(@Field("wid") String weiboId, @Field("text") String weiboComment, @Header("authorization") String id_token);
 
     @GET("comment/list")
-    Observable<CommentJson> comment(@Header("authorization") String id_token, @Query("wid") String weiboId, @Query("from") String froms, @Query("size") String sizes);
+    Observable<CommentJson> comment(@Header("authorization") String id_token, @Query("wid") String weiboId, @Query("page") int page, @Query("size") int sizes, @Query("order") String order, @Query("column") String column);
 
     @Multipart
     @POST("user/upload")
     Observable<JsonObject> upload(@Part MultipartBody.Part file, @Header("authorization") String id_token);
 
+    @FormUrlEncoded
+    @POST("user/edit")
+    Observable<JsonObject> edit(@Header("authorization") String id_token, @Field("nickname") String nickname, @Field("gender") String gender, @Field("introduction") String introduce, @Field("location") String location);
+
+    @FormUrlEncoded
+    @POST("weibo/like")
+    Observable<JsonObject> like(@Field("wid") String wid, @Header("authorization") String id_token);
+
+    @FormUrlEncoded
+    @POST("weibo/dislike")
+    Observable<JsonObject> unlike(@Field("wid") String wid, @Header("authorization") String id_token);
+
+    @FormUrlEncoded
+    @POST("query")
+    Observable<PersonJson> query(@Header("authorization") String id_token, @Field("nickname") String nickname, @Field("page") int page, @Field("size") int sizes, @Field("order") String order, @Field("column") String column);
+
+    @FormUrlEncoded
+    @POST("user/follow")
+    Observable<PersonJson> follow(@Header("authorization") String id_token, @Field("uid") int uid);
+
+    @FormUrlEncoded
+    @POST("user/unfollow")
+    Observable<PersonJson> unfollow(@Header("authorization") String id_token, @Field("uid") int uid);
+
+    @GET("user/follows")
+    Observable<PersonJson> getfollow(@Header("authorization") String id_token, @Query("page") int page, @Query("size") int sizes, @Query("order") String order, @Query("column") String column);
+
+    @GET("user/followers")
+    Observable<PersonJson> getfollower(@Header("authorization") String id_token, @Query("page") int page, @Query("size") int sizes, @Query("order") String order, @Query("column") String column);
+
+    @GET("user/profile")
+    Observable<JsonObject> profile(@Header("authorization") String id_token);
+
+    @GET("user/look")
+    Observable<JsonObject> look(@Header("authorization") String id_token, @Query("uid") int uid);
 
 
+    @GET("weibo/look")
+    Observable<ContentJson> weibolook(@Header("authorization") String id_token, @Query("uid") int uid, @Query("page") int page, @Query("size") int sizes, @Query("order") String order, @Query("column") String column);
 }

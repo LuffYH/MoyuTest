@@ -16,21 +16,19 @@ public class Comments implements Serializable {
 
     private Integer replyAmount;
 
-    private Integer commentLike;
-
     private String createTime;
 
     private int weiboId;
 
     public Comments(int authorId, String authorName, String authorAvatar, String commentContent,
-                    String createTime, int weiboId, int commentLike) {
+                    String createTime, int weiboId) {
         this.authorId = authorId;
         this.authorName = authorName;
         this.authorAvatar = authorAvatar;
         this.commentContent = commentContent;
         this.createTime = createTime;
         this.weiboId = weiboId;
-        this.commentLike = commentLike;
+
     }
 
     public int getCommentId() {
@@ -79,14 +77,6 @@ public class Comments implements Serializable {
 
     public void setReplyAmount(Integer replyAmount) {
         this.replyAmount = replyAmount;
-    }
-
-    public Integer getCommentLike() {
-        return commentLike;
-    }
-
-    public void setCommentLike(Integer commentLike) {
-        this.commentLike = commentLike;
     }
 
     public String getCreateTime() {

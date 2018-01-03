@@ -1,9 +1,11 @@
 package com.example.moyutest;
 
 import android.content.Intent;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -23,11 +25,13 @@ import io.reactivex.schedulers.Schedulers;
 public class SettingActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RelativeLayout exit;
+    private ImageView back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        back = (ImageView) findViewById(R.id.settingtoolbar_back);
         exit = (RelativeLayout) findViewById(R.id.exitLayout);
         exit.setOnClickListener(this);
     }
@@ -67,6 +71,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
                                 Toast.makeText(SettingActivity.this, "退出成功", Toast.LENGTH_SHORT).show();
                             }
                         });
+                break;
+            case R.id.settingtoolbar_back:
+                finish();
                 break;
             default:
                 break;

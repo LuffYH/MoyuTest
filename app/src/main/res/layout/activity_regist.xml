@@ -44,13 +44,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/text2"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@null"
         android:hint="@string/inserPhone"
-        android:padding="20dp"
+        android:inputType="textVisiblePassword"
+        android:lines="1"
+        android:maxLength="11"
+        android:padding="18dp"
         android:textColor="@color/black"
-        android:textColorHint="@color/grey"
-        android:textSize="20dp" />
+        android:textSize="18dp" />
 
     <LinearLayout
         android:id="@+id/validatell"
@@ -67,14 +70,23 @@
             android:textColor="@color/black"
             android:textSize="20dp" />
 
+
         <EditText
             android:id="@+id/code"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
+            android:layout_below="@+id/text2"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@null"
+            android:hint="输入验证码"
+            android:inputType="textVisiblePassword"
+            android:lines="1"
+            android:maxLength="11"
+            android:padding="18dp"
             android:textColor="@color/black"
-            android:textSize="20dp" />
-
+            android:textSize="18dp" />
         <Button
             android:id="@+id/btn_request"
             android:layout_width="0dp"

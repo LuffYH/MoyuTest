@@ -6,34 +6,44 @@ package com.example.moyutest.model;
 
 public class Contents {
 
-    private int weiboId;
+    private int microBlogId;
     private int authorId;
     private String authorName;
     private String authorAvatar;
-    private String weiboContent;
+    private String content;
     private int imageAmount;
     private int commentAmount;
     private int weiboLike;
     private String createTime;
+    private boolean myLike;
 
-
-    public Contents(int mweiboId,int mauthorId,String mauthorName, String mauthorAvatar, String mcontent, int mimageAmount, int mcommentAmount, int mweiboLike, String mcreateTime) {
-        this.weiboId = mweiboId;
+    public Contents(int mweiboId, int mauthorId, String mauthorName, String mauthorAvatar, String mcontent, int mimageAmount, int mcommentAmount, int mweiboLike, String mcreateTime, boolean mmylike) {
+        this.microBlogId = mweiboId;
         this.authorId = mauthorId;
         this.createTime = mcreateTime;
         this.weiboLike = mweiboLike;
         this.authorAvatar = mauthorAvatar;
         this.authorName = mauthorName;
         this.commentAmount = mcommentAmount;
-        this.weiboContent = mcontent;
+        this.content = mcontent;
         this.imageAmount = mimageAmount;
-    }
-    public int getWeiboId() {
-        return weiboId;
+        this.myLike = mmylike;
     }
 
-    public void setWeiboId(int weiboId) {
-        this.weiboId = weiboId;
+    public boolean isMyLike() {
+        return myLike;
+    }
+
+    public void setMyLike(boolean myLike) {
+        this.myLike = myLike;
+    }
+
+    public int getMicroBlogId() {
+        return microBlogId;
+    }
+
+    public void setMicroBlogId(int microBlogId) {
+        this.microBlogId = microBlogId;
     }
 
     public int getAuthorId() {
@@ -60,12 +70,12 @@ public class Contents {
         this.authorAvatar = authorAvatar == null ? null : authorAvatar.trim();
     }
 
-    public String getWeiboContent() {
-        return weiboContent;
+    public String getContent() {
+        return content;
     }
 
-    public void setWeiboContent(String weiboContent) {
-        this.weiboContent = weiboContent == null ? null : weiboContent.trim();
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Integer getImageAmount() {
@@ -99,5 +109,18 @@ public class Contents {
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
+
+    public void setImageAmount(int imageAmount) {
+        this.imageAmount = imageAmount;
+    }
+
+    public void setCommentAmount(int commentAmount) {
+        this.commentAmount = commentAmount;
+    }
+
+    public void setWeiboLike(int weiboLike) {
+        this.weiboLike = weiboLike;
+    }
+
 
 }

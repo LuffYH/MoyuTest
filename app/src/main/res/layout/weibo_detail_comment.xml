@@ -11,28 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/commentbar_top_drive" />
-
-    <TextView
-        android:id="@+id/comment_none"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="15dp"
-        android:layout_marginTop="15dp"
-        android:text="还没有人评论"
-        android:textColor="@color/empty_text"
-        android:textSize="16sp" />
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/comment_refresh"
+    <!--
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/comment_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="10dp" />-->
+    <com.jude.easyrecyclerview.EasyRecyclerView
+        android:id="@+id/comment_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/comment_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="10dp" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+        app:layout_empty="@layout/view_empty"
+        app:layout_progress="@layout/view_progress"
+        app:scrollbarStyle="insideOverlay" />
 </RelativeLayout>

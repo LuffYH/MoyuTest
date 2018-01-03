@@ -31,13 +31,19 @@ import com.google.gson.JsonObject;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.java_websocket.WebSocket;
 import org.litepal.tablemanager.Connector;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;;
+import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
+import rx.functions.Action1;
+import ua.naiksoftware.stomp.LifecycleEvent;
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.client.StompClient;;import static android.content.ContentValues.TAG;
+import static ua.naiksoftware.stomp.LifecycleEvent.Type.OPENED;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
 
@@ -52,6 +58,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private TextView mRegister;
     public static Activity mLoginActivity = null;
     private String mb, md5pw;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,7 +228,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 final String pw = mEtPassword.getText().toString();
                 md5pw = new String(Hex.encodeHex(DigestUtils.md5(pw)));
                 final Api api = RetrofitProvider.create().create(Api.class);
-                api.login(mb, md5pw).subscribeOn(Schedulers.io())
+                api.login(mb, md5pw)
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Observer<JsonObject>() {
 
@@ -247,7 +255,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
                             @Override
                             public void onError(Throwable e) {
-
+                                Toast.makeText(LoginActivity.this, "登陆失败", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -258,4 +266,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 break;
         }
     }
+
+
 }

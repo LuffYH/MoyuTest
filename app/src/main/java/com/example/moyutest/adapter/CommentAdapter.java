@@ -1,3 +1,4 @@
+/*
 package com.example.moyutest.adapter;
 
 import android.content.Context;
@@ -17,9 +18,11 @@ import com.example.moyutest.model.Comments;
 
 import java.util.List;
 
+*/
 /**
  * Created by Administrator on 2017/12/6.
- */
+ *//*
+
 
 public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
@@ -40,7 +43,6 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public TextView authorName;
         public TextView commentcontent;
         public TextView createtime;
-        public TextView commentfeedlike;
         public ImageView commentImage;
 
         public ItemViewHolder(View view) {
@@ -50,13 +52,14 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             commentcontent = (TextView) view.findViewById(R.id.comment_content);
             createtime = (TextView) view.findViewById(R.id.comment_time);
             commentImage = (ImageView) view.findViewById(R.id.comment_img);
-          /*  commentfeedlike = (TextView) view.findViewById(R.id.feedlike);*/
         }
     }
 
-    /**
+    */
+/**
      * 底部FootView布局
-     */
+     *//*
+
     public static class FootViewHolder extends RecyclerView.ViewHolder {
         public TextView foot_view_item_tv;
 
@@ -98,9 +101,11 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((ItemViewHolder) holder).commentcontent.setText(Comments.getCommentContent());
             ((ItemViewHolder) holder).createtime.setText(Comments.getCreateTime());
 
-            Glide.with(mContext).load("http://10.4.105.32:8080/moyu/images/avatar/" + Comments.getAuthorAvatar()).into(((CommentAdapter.ItemViewHolder) holder).commentImage);
+            Glide.with(mContext).load("http://120.79.42.49:8080/moyu/images/avatar/" + Comments.getAuthorAvatar()).into(((CommentAdapter.ItemViewHolder) holder).commentImage);
 
-         /*   ((ItemViewHolder) holder).commentfeedlike.setText("赞 " + Comments.getCommentLike());*/
+         */
+/*   ((ItemViewHolder) holder).commentfeedlike.setText("赞 " + Comments.getCommentLike());*//*
+
         } else if (holder instanceof CommentAdapter.FootViewHolder) {
             CommentAdapter.FootViewHolder footViewHolder = (CommentAdapter.FootViewHolder) holder;
             switch (load_more_status) {
@@ -137,7 +142,8 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    /**
+    */
+/**
      * //上拉加载更多
      * PULLUP_LOAD_MORE=0;
      * //正在加载中
@@ -146,7 +152,8 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * NO_MORE_DATA=2;
      *
      * @param status
-     */
+     *//*
+
     public void changeMoreStatus(int status) {
         load_more_status = status;
         if (load_more_status == 1) {
@@ -154,3 +161,4 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 }
+*/

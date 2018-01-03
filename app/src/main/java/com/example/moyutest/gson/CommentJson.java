@@ -46,27 +46,15 @@ public class CommentJson {
     }
 
     public static class ObjBean {
-        /**
-         * commentId : 2
-         * authorId : 2
-         * authorName : jiean
-         * authorAvatar : a
-         * commentContent : 真幽默
-         * replyAmount : 0
-         * commentLike : 0
-         * createTime : 2017-12-05 14:53:29
-         * weiboId : 14
-         */
-
         private int commentId;
         private int authorId;
+        private String content;
+        private String createTime;
+        private int microBlogId;
         private String authorName;
         private String authorAvatar;
-        private String commentContent;
-        private int replyAmount;
-        private int commentLike;
-        private String createTime;
-        private int weiboId;
+        private Object replyAmount;
+        private boolean myLike;
 
         public int getCommentId() {
             return commentId;
@@ -82,6 +70,30 @@ public class CommentJson {
 
         public void setAuthorId(int authorId) {
             this.authorId = authorId;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getCreateTime() {
+            return createTime;
+        }
+
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
+        }
+
+        public int getMicroBlogId() {
+            return microBlogId;
+        }
+
+        public void setMicroBlogId(int microBlogId) {
+            this.microBlogId = microBlogId;
         }
 
         public String getAuthorName() {
@@ -100,44 +112,20 @@ public class CommentJson {
             this.authorAvatar = authorAvatar;
         }
 
-        public String getCommentContent() {
-            return commentContent;
-        }
-
-        public void setCommentContent(String commentContent) {
-            this.commentContent = commentContent;
-        }
-
-        public int getReplyAmount() {
+        public Object getReplyAmount() {
             return replyAmount;
         }
 
-        public void setReplyAmount(int replyAmount) {
+        public void setReplyAmount(Object replyAmount) {
             this.replyAmount = replyAmount;
         }
 
-        public int getCommentLike() {
-            return commentLike;
+        public boolean isMyLike() {
+            return myLike;
         }
 
-        public void setCommentLike(int commentLike) {
-            this.commentLike = commentLike;
-        }
-
-        public String getCreateTime() {
-            return createTime;
-        }
-
-        public void setCreateTime(String createTime) {
-            this.createTime = createTime;
-        }
-
-        public int getWeiboId() {
-            return weiboId;
-        }
-
-        public void setWeiboId(int weiboId) {
-            this.weiboId = weiboId;
+        public void setMyLike(boolean myLike) {
+            this.myLike = myLike;
         }
     }
 }

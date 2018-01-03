@@ -24,7 +24,7 @@ public class MoyuUser extends DataSupport {
     @Column(nullable = false)
     private int gender;
 
-    private String introduce;
+    private String introduction;
 
     private String location;
 
@@ -90,12 +90,12 @@ public class MoyuUser extends DataSupport {
         this.gender = gender;
     }
 
-    public String getIntroduce() {
-        return introduce;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public void setIntroduce(String introduce) {
-        this.introduce = introduce;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     public String getLocation() {

@@ -2,21 +2,11 @@ package com.example.moyutest;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.provider.MediaStore;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -24,10 +14,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.moyutest.db.MoyuUser;
 import com.example.moyutest.util.Api;
 import com.example.moyutest.util.BaseActivity;
@@ -35,9 +27,7 @@ import com.example.moyutest.util.GlideImageLoader;
 import com.example.moyutest.util.HandleResponse;
 import com.example.moyutest.util.RetrofitProvider;
 import com.example.moyutest.util.SharedPreferencesUtil;
-import com.example.moyutest.util.UploadUtil;
 import com.google.gson.JsonObject;
-import com.yancy.gallerypick.adapter.PhotoAdapter;
 import com.yancy.gallerypick.config.GalleryConfig;
 import com.yancy.gallerypick.config.GalleryPick;
 import com.yancy.gallerypick.inter.IHandlerCallBack;
@@ -48,35 +38,33 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.transform.Result;
-
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class MyActivity extends BaseActivity implements View.OnClickListener {
-    private TextView follow, fans, nickname;
-    private ImageView myphoto;
-    private LinearLayout exitll;
+    private static TextView follow;
+    private static TextView fans;
+    private static TextView nickname;
+    private static ImageView myphoto;
+    private static TextView introduce;
+    private RelativeLayout settingll, personalll;
+    private LinearLayout followsll, followerll;
     private GalleryConfig galleryConfig;
     protected static final int CHOOSE_PICTURE = 0;
     protected static final int TAKE_PICTURE = 1;
-    private Context mContext;
-    private Activity mActivity;
+    private static Context mContext;
+    private static Activity mActivity;
     private final int PERMISSIONS_REQUEST_READ_CONTACTS = 8;
     private List<String> path = new ArrayList<>();
     private String TAG = "Phone";
     private IHandlerCallBack iHandlerCallBack;
+    private String obj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,23 +72,42 @@ public class MyActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_my);
         mContext = this;
         mActivity = this;
-        follow = (TextView) findViewById(R.id.my_follow);
-        fans = (TextView) findViewById(R.id.my_fans);
-        nickname = (TextView) findViewById(R.id.my_nickname);
-        exitll = (LinearLayout) findViewById(R.id.setting);
-        MoyuUser user = DataSupport.findFirst(MoyuUser.class);
-        follow.setText(String.valueOf(user.getFollow()));
-        fans.setText(String.valueOf(user.getFollower()));
-        nickname.setText(user.getNickname());
-        myphoto = (ImageView) findViewById(R.id.my_photo);
-        exitll.setOnClickListener(this);
+        findById();
+        setText();
+        settingll.setOnClickListener(this);
         myphoto.setOnClickListener(this);
-        Glide.with(MyActivity.this)
-                .load("http://10.4.105.32:8080/moyu/images/avatar/" + user.getAvatar())
-                .into(myphoto);
+        personalll.setOnClickListener(this);
+        followsll.setOnClickListener(this);
+        followerll.setOnClickListener(this);
         initGallery();
         init();
 
+    }
+
+    private static void setText() {
+        MoyuUser user = DataSupport.findFirst(MoyuUser.class);
+        nickname.setText(user.getNickname());
+        follow.setText(String.valueOf(user.getFollow()));
+        fans.setText(String.valueOf(user.getFollower()));
+        introduce.setText(user.getIntroduction());
+        RequestOptions requestOptions = new RequestOptions()
+                .placeholder(R.drawable.account);
+        Glide.with(mContext)
+                .load("http://120.79.42.49:8080/images/avatar/" + user.getAvatar())
+                .apply(requestOptions)
+                .into(myphoto);
+    }
+
+    private void findById() {
+        follow = (TextView) findViewById(R.id.my_follow);
+        fans = (TextView) findViewById(R.id.my_fans);
+        nickname = (TextView) findViewById(R.id.my_nickname);
+        settingll = (RelativeLayout) findViewById(R.id.setting);
+        personalll = (RelativeLayout) findViewById(R.id.personal_data);
+        myphoto = (ImageView) findViewById(R.id.my_photo);
+        followerll = (LinearLayout) findViewById(R.id.btn_followers);
+        followsll = (LinearLayout) findViewById(R.id.btn_follows);
+        introduce = (TextView) findViewById(R.id.profile_introduce);
     }
 
     private void init() {
@@ -142,6 +149,18 @@ public class MyActivity extends BaseActivity implements View.OnClickListener {
                         }
                     }
                 }, getFragmentManager());
+                break;
+            case R.id.personal_data:
+                Intent personalIntent = new Intent(MyActivity.this, PersonalDataActivity.class);
+                startActivityForResult(personalIntent, 5);
+                break;
+            case R.id.btn_follows:
+                Intent followsintent = new Intent(MyActivity.this, FollowActivity.class);
+                startActivity(followsintent);
+                break;
+            case R.id.btn_followers:
+                Intent followersintent = new Intent(MyActivity.this, FollowerActivity.class);
+                startActivity(followersintent);
                 break;
             default:
                 break;
@@ -194,9 +213,6 @@ public class MyActivity extends BaseActivity implements View.OnClickListener {
                     Log.i(TAG, "图片路径" + s);
                     path.add(s);
                 }
-                Glide.with(MyActivity.this)
-                        .load(path.get(0))
-                        .into(myphoto);
                 String id_token = SharedPreferencesUtil.getIdTokenFromXml(MyActivity.this);
                 File file = new File(path.get(0));
                 Log.d(TAG, "图片名" + file.getName());
@@ -215,7 +231,7 @@ public class MyActivity extends BaseActivity implements View.OnClickListener {
                             @Override
                             public void onNext(JsonObject JsonObject) {
                                 String responeseBody = JsonObject.toString();
-                                String obj = HandleResponse.handlerupload(responeseBody);
+                                obj = HandleResponse.handlerupload(responeseBody);
                                 Log.d("Phone", "上传头像" + responeseBody);
                             }
 
@@ -226,7 +242,13 @@ public class MyActivity extends BaseActivity implements View.OnClickListener {
 
                             @Override
                             public void onComplete() {
-
+                                Glide.with(MyActivity.this)
+                                        .load(path.get(0))
+                                        .into(myphoto);
+                                MoyuUser user = new MoyuUser();
+                                user.setAvatar(obj);
+                                String id = SharedPreferencesUtil.getIdFromDB();
+                                user.updateAll("userid = ?", id);
                             }
                         });
             }
@@ -245,9 +267,11 @@ public class MyActivity extends BaseActivity implements View.OnClickListener {
             public void onError() {
                 Log.i(TAG, "onError: 出错");
             }
-        }
+        };
 
-        ;
+    }
 
+    public static void change() {
+        setText();
     }
 }

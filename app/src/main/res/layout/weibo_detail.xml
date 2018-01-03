@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:paddingTop="10dp">
 
-        <include layout="@layout/weibo_detail_toolbar" />
+        <include layout="@layout/tolbar_detail" />
 
         <LinearLayout
             android:id="@+id/bg_layout"

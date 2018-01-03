@@ -2,12 +2,14 @@ package com.example.moyutest;
 
 import android.app.Activity;
 import android.app.LocalActivityManager;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,20 +20,39 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.moyutest.adapter.MainFragmentPagerAdapter;
 import com.example.moyutest.adapter.MyViewPagerAdapter;
+import com.example.moyutest.util.Api;
 import com.example.moyutest.util.BaseActivity;
 import com.example.moyutest.util.BottomNavigationViewHelper;
+import com.example.moyutest.util.HandleResponse;
+import com.example.moyutest.util.RetrofitProvider;
+import com.example.moyutest.util.SharedPreferencesUtil;
+import com.google.gson.JsonObject;
 
+import org.java_websocket.WebSocket;
 import org.litepal.tablemanager.Connector;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import pl.com.salsoft.sqlitestudioremote.SQLiteStudioService;
+import rx.functions.Action1;
+import ua.naiksoftware.stomp.LifecycleEvent;
+import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.client.StompClient;
+import ua.naiksoftware.stomp.client.StompMessage;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends BaseActivity {
 
@@ -43,16 +64,19 @@ public class MainActivity extends BaseActivity {
     private BottomNavigationView bottomNavigationView;
     public static Activity mMainActivity = null;
     private long exitfirstTime = 0;
+    private StompClient mStompClient;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //连接SQLiteStudio
         mMainActivity = this;
         SQLiteStudioService.instance().start(this);
         Connector.getDatabase();
+        createStompClient();
+        registerStompTopic();
 //        checklogin();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,6 +115,52 @@ public class MainActivity extends BaseActivity {
                     }
                 });
         InitPager();
+    }
+
+
+    ///user/lincoln/queue/notifications
+    private void registerStompTopic() {
+        String url = "/user/" + SharedPreferencesUtil.getIdFromDB() + "/message";
+        mStompClient.topic(url).subscribe(new Action1<StompMessage>() {
+            @Override
+            public void call(StompMessage stompMessage) {
+                Log.d("Phone", stompMessage.getPayload());
+                String responseText = stompMessage.getPayload();
+                String newcomment = HandleResponse.handleNewComment(responseText);
+                NotificationCompat
+                        .Builder builder = new NotificationCompat.Builder(MainActivity.this)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("有新评论")
+                        .setTicker("有新评论")
+                        .setAutoCancel(true)
+                        .setWhen(System.currentTimeMillis())
+                        .setContentText(newcomment);
+                NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                manager.notify(1, builder.build());
+            }
+        });
+    }
+
+
+    private void createStompClient() {
+        mStompClient = Stomp.over(WebSocket.class, "ws://120.79.42.49:8080/hello/websocket");
+        mStompClient.connect();
+        mStompClient.lifecycle().subscribe(new Action1<LifecycleEvent>() {
+            @Override
+            public void call(LifecycleEvent lifecycleEvent) {
+                switch (lifecycleEvent.getType()) {
+                    case OPENED:
+                        Log.d("Phone", "Stomp connection opened");
+                        break;
+                    case ERROR:
+                        Log.e("Phone", "Stomp Error", lifecycleEvent.getException());
+                        break;
+                    case CLOSED:
+                        Log.d("Phone", "Stomp connection closed");
+                        break;
+                }
+            }
+        });
     }
 
     private void InitPager() {
@@ -173,5 +243,36 @@ public class MainActivity extends BaseActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String id_token = SharedPreferencesUtil.getIdTokenFromXml(MainActivity.this);
+        Api api = RetrofitProvider.create().create(Api.class);
+        api.profile(id_token).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        String responstText = jsonObject.toString();
+                        HandleResponse.handleProfile(responstText);
+                        MyActivity.change();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }

@@ -4,10 +4,15 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.moyutest.db.MoyuUser;
+import com.example.moyutest.model.Comments;
+import com.example.moyutest.model.Person;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/8/22.
@@ -40,6 +45,55 @@ public class HandleResponse {
         return token;
     }
 
+    public static List<Person> handlelook(String response) {
+        List<Person> personList = new ArrayList<>();
+        try {
+            JSONObject lookObject = new JSONObject(response);
+            JSONObject jsonObject = lookObject.getJSONObject("obj");
+            String name = jsonObject.getString("nickname");
+            int userid = jsonObject.getInt("userId");
+            String avatar = jsonObject.getString("avatar");
+            int follow = jsonObject.getInt("follow");
+            int follower = jsonObject.getInt("follower");
+            int gender = jsonObject.getInt("gender");
+            String introduction = jsonObject.getString("introduction");
+            String location = jsonObject.getString("location");
+            boolean myfollow = jsonObject.getBoolean("myFollow");
+            Log.d("Phone", location);
+            personList.add(new Person(userid, avatar, name, gender, introduction, location, follow, follower, myfollow));
+            return personList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return personList;
+    }
+
+
+    public static void handleProfile(String response) {
+        Gson gson = new Gson();
+        try {
+            JSONObject ProfileObject = new JSONObject(response);
+            JSONObject contentObject = ProfileObject.getJSONObject("obj");
+            String profileContent = contentObject.toString();
+            MoyuUser user = gson.fromJson(profileContent, MoyuUser.class);
+            String id = SharedPreferencesUtil.getIdFromDB();
+            user.updateAll("userid = ?", id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String handleNewComment(String response) {
+        String newcomment = "";
+        try {
+            JSONObject newCommentObj = new JSONObject(response);
+            newcomment = newCommentObj.getString("content");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return newcomment;
+    }
+
     public static String handleregistResponse(String response) {
         String obj = "";
         if (!TextUtils.isEmpty(response)) {
@@ -53,6 +107,7 @@ public class HandleResponse {
         }
         return obj;
     }
+
     public static String handlerupload(String response) {
         String obj = "";
         if (!TextUtils.isEmpty(response)) {
@@ -66,6 +121,7 @@ public class HandleResponse {
         }
         return obj;
     }
+
     public static String handletokenResponse(String response, String pw, String phone) {
         String token = "";
         if (!TextUtils.isEmpty(response)) {
@@ -107,6 +163,7 @@ public class HandleResponse {
         }
         return content;
     }
+
     public static boolean sendcomment(String response) {
         boolean comment = false;
         if (!TextUtils.isEmpty(response)) {
@@ -123,6 +180,7 @@ public class HandleResponse {
         }
         return comment;
     }
+
     public static boolean weibo(String response) {
 //        List<ContentJson> weibos = null;
         boolean content = false;

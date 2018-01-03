@@ -17,9 +17,9 @@
     <application
         android:name="org.litepal.LitePalApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/moyu"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/moyu"
         android:supportsRtl="true"
         android:theme="@style/MoyuActivityTheme">
         <activity
@@ -31,6 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.example.moyutest.fileprovider"
@@ -40,10 +41,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <activity android:name=".MainActivity" />
         <activity android:name=".PasswordActivity" />
         <activity android:name=".RegistActivity" />
-        <activity android:name=".ContentActivity" />
+        <activity
+            android:name=".ContentActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".MoyuActivity" />
         <activity android:name=".MyActivity" />
         <activity android:name=".MessageActivity" />
@@ -51,7 +55,13 @@
         <activity android:name=".EditActivity" />
         <activity android:name=".PostActivity" />
         <activity android:name=".CommentActivity" />
-        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".PersonalDataActivity" />
+        <activity android:name=".FollowActivity" />
+        <activity android:name=".FollowerActivity" />
+        <activity
+            android:name=".ProfileActivity"
+            android:launchMode="singleTask"></activity>
     </application>
 
 </manifest>

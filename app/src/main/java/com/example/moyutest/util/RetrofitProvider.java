@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitProvider {
     //Api地址前半部
-    private static final String ENDPOINT = "http://10.4.105.32:8080/moyu/";
+    private static final String ENDPOINT = "http://120.79.42.49:8080/";
 
     public static Retrofit create() {
         OkHttpClient.Builder builder = new OkHttpClient().newBuilder();

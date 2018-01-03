@@ -1,9 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TextView
-        android:layout_width="wrap_content"
+
+    <include
+        android:id="@+id/tb_search"
+        layout="@layout/toolbar_search" />
+
+    <LinearLayout
+        android:id="@+id/searchll"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search"/>
+        android:layout_below="@+id/tb_search">
+
+        <EditText
+            android:id="@+id/txtsearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:background="@color/white"
+            android:inputType="textVisiblePassword"
+            android:lines="1"
+            android:hint="输入用户名"
+            android:maxLength="11"
+            android:textColor="@color/black"
+            android:textSize="18dp" />
+
+        <Button
+            android:id="@+id/btnsearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/search" />
+    </LinearLayout>
+
+    <com.jude.easyrecyclerview.EasyRecyclerView
+        android:id="@+id/searchRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/searchll"
+        app:layout_empty="@layout/view_empty"
+        app:layout_progress="@layout/view_progress"
+        app:scrollbarStyle="insideOverlay">
+
+    </com.jude.easyrecyclerview.EasyRecyclerView>
 </RelativeLayout>
